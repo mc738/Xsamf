@@ -1,8 +1,9 @@
-namespace Xsamf.V1.Store.Shared
+namespace Xsamf.V1.Store.Shared.Domain
 
-open System
+module Tenants =
 
-module Domain =
+    open System
+        
     type NewTenant =
         { Reference: string
           Name: string
@@ -28,10 +29,8 @@ module Domain =
         | All of ListTenantsRequest list
         | Any of ListTenantsRequest list
 
-
     and [<RequireQualifiedAccess>] ListTenantsRequestActiveStatus =
         | Active
         | NotActive
         | Any
 
-    ()

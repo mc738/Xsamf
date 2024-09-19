@@ -6,15 +6,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Library.fs"/>
         <Compile Include="V1\Common\Utils.fs" />
-        <Compile Include="V1\Store\Shared\Common.fs" />
-        <Compile Include="V1\Store\Shared\Domain.fs" />
+        <Folder Include="V1\Common\Domain\" />
+        <Compile Include="V1\Store\Shared\Domain\Common.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Tenants.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Entities.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Watchers.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Dms.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Events.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Incidents.fs" />
         <Compile Include="V1\Store\Shared\IXsamfStore.fs" />
         <Folder Include="V1\Store\SQLite\" />
         <Folder Include="V1\Store\MySql\" />
         <Folder Include="V1\Store\PostgreSQL\" />
-        <Folder Include="V1\Monitoring\" />
+        <Folder Include="V1\Monitoring\Dms\" />
+        <Folder Include="V1\Monitoring\Events\" />
+        <Folder Include="V1\Monitoring\Incidents\" />
     </ItemGroup>
 
     <ItemGroup>
