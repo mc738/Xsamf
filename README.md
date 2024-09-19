@@ -1,6 +1,6 @@
 # Xsamf
 
-Xsamf (e**X**tenable **s**ystem and **a**pplication **m**onitoring **f**ramework) is a framework/tool for building monitoring system.
+Xsamf (e**X**tenable **S**ystem and **A**pplication **M**onitoring **F**ramework) is a framework/tool for building monitoring system.
 
 ## Monitoring types
 
