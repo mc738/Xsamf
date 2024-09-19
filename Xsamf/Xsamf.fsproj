@@ -7,6 +7,18 @@
 
     <ItemGroup>
         <Compile Include="Library.fs"/>
+        <Compile Include="V1\Common\Utils.fs" />
+        <Compile Include="V1\Store\Shared\Common.fs" />
+        <Compile Include="V1\Store\Shared\Domain.fs" />
+        <Compile Include="V1\Store\Shared\IXsamfStore.fs" />
+        <Folder Include="V1\Store\SQLite\" />
+        <Folder Include="V1\Store\MySql\" />
+        <Folder Include="V1\Store\PostgreSQL\" />
+        <Folder Include="V1\Monitoring\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FsToolbox" Version="0.9.3" />
     </ItemGroup>
 
 </Project>
