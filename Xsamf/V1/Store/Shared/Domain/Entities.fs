@@ -8,6 +8,15 @@ module Entities =
         { Reference: NewReferenceType
           TenantReference: string
           Name: string
-          CreatedTimestamp: TimestampType }
+          CreatedTimestamp: TimestampType
+          Tags: string list }
+        
+    
+    type AddEntityTagsRequest =
+        {
+            TenantReference: string
+            Reference: NewReferenceType
+            
+        }
 
     
