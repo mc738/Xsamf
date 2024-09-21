@@ -56,15 +56,11 @@ module Activities =
 
         member ar.Test(activity: Activity) = ar.Test(activity, Map.empty)
 
-    type ActivityOutcome =
-        | CreateIncident
-        | CloseIncident
-
     type ActivityAction =
         {
             Name: string
             Rule: ActivityRule
-            Outcomes: ActivityOutcome list
+            Outcomes: ActionOutcome list
             /// <summary>
             /// A collection of addition metadata that will be added to an activity if the action is triggered.
             /// These will be used for any future processing from this action specifically.
@@ -89,7 +85,7 @@ module Activities =
 
     and ActivityActionResult =
         { Name: string
-          Outcomes: ActivityOutcome list
+          Outcomes: ActionOutcome list
           AdditionMetadata: Map<string, string>
           AdditionTags: string list }
 
