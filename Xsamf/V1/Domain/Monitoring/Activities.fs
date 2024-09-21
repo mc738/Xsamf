@@ -37,19 +37,22 @@ module Activities =
         member ar.Test(activity: Activity, bespokeHandlers: Map<string, Activity -> bool>) =
             match ar with
             | IsCategory category -> activity.Category = category
-            | HasTag tag -> failwith "todo"
-            | HasTags tags -> failwith "todo"
-            | HasMetadata key -> failwith "todo"
-            | MetadataValueEquals(key, value) -> failwith "todo"
+            | HasTag tag -> activity.Tags |> List.contains tag
+            | HasTags tags -> tags |> List.forall (fun t -> activity.Tags |> List.contains t)
+            | HasMetadata key -> activity.Metadata |> Map.containsKey key
+            | MetadataValueEquals(key, value) ->
+                activity.Metadata.TryFind key
+                |> Option.map (fun mdv -> mdv.Equals(value, StringComparison.OrdinalIgnoreCase))
+                |> Option.defaultValue false
             | Bespoke handlerName ->
                 bespokeHandlers.TryFind handlerName
                 |> Option.map (fun h -> h activity)
                 |> Option.defaultValue false
-            | Not rule -> failwith "todo"
-            | And(ruleA, ruleB) -> failwith "todo"
-            | Or(ruleA, ruleB) -> failwith "todo"
-            | All rules -> failwith "todo"
-            | Any rules -> failwith "todo"
+            | Not rule -> rule.Test(activity, bespokeHandlers) |> not
+            | And(ruleA, ruleB) -> ruleA.Test(activity, bespokeHandlers) && ruleB.Test(activity, bespokeHandlers)
+            | Or(ruleA, ruleB) -> ruleA.Test(activity, bespokeHandlers) || ruleB.Test(activity, bespokeHandlers)
+            | All rules -> rules |> List.forall (fun r -> r.Test(activity, bespokeHandlers))
+            | Any rules -> rules |> List.exists (fun r -> r.Test(activity, bespokeHandlers))
 
         member ar.Test(activity: Activity) = ar.Test(activity, Map.empty)
 
@@ -58,19 +61,21 @@ module Activities =
         | CloseIncident
 
     type ActivityAction =
-        { Name: string
-          Rule: ActivityRule
-          Outcomes: ActivityOutcome list
-          /// <summary>
-          /// A collection of addition metadata that will be added to an activity if the action is triggered.
-          /// These will be used for any future processing from this action specifically.
-          /// </summary>
-          AdditionMetadata: Map<string, string>
-          /// <summary>
-          /// A list of addition tags that will be added to an activity if the action is triggered.
-          /// These will be used for any future processing from this action specifically.
-          /// </summary>
-          AdditionTags: string list }
+        {
+            Name: string
+            Rule: ActivityRule
+            Outcomes: ActivityOutcome list
+            /// <summary>
+            /// A collection of addition metadata that will be added to an activity if the action is triggered.
+            /// These will be used for any future processing from this action specifically.
+            /// </summary>
+            AdditionMetadata: Map<string, string>
+            /// <summary>
+            /// A list of addition tags that will be added to an activity if the action is triggered.
+            /// These will be used for any future processing from this action specifically.
+            /// </summary>
+            AdditionTags: string list
+        }
 
         member aa.Handle(activity: Activity, bespokeHandlers: Map<string, Activity -> bool>) =
             match aa.Rule.Test(activity, bespokeHandlers) with
@@ -97,20 +102,22 @@ module Activities =
         member aar.HasOutcomes() = aar.Outcomes.IsEmpty |> not
 
     type ActivityWatcher =
-        { Reference: string
-          TenantReference: string
-          EntityReference: string
-          Actions: ActivityAction list
-          /// <summary>
-          /// A collection of addition metadata that will be added to an activity if the action is triggered.
-          /// These will be used for any future processing from any rule hits from this watcher.
-          /// </summary>
-          AdditionMetadata: Map<string, string>
-          /// <summary>
-          /// A list of addition tags that will be added to an activity if the action is triggered.
-          /// These will be used for any future processing from any rule hits from this watcher.
-          /// </summary>
-          AdditionTags: string list  }
+        {
+            Reference: string
+            TenantReference: string
+            EntityReference: string
+            Actions: ActivityAction list
+            /// <summary>
+            /// A collection of addition metadata that will be added to an activity if the action is triggered.
+            /// These will be used for any future processing from any rule hits from this watcher.
+            /// </summary>
+            AdditionMetadata: Map<string, string>
+            /// <summary>
+            /// A list of addition tags that will be added to an activity if the action is triggered.
+            /// These will be used for any future processing from any rule hits from this watcher.
+            /// </summary>
+            AdditionTags: string list
+        }
 
         member aw.HandleActivity(activity, bespokeHandlers: Map<string, Activity -> bool>, filterEmpty: bool) =
             aw.Actions
