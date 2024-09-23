@@ -1,21 +1,35 @@
 namespace Xsamf.V1.Domain.Monitoring
 
-open System
-open System.Text.Json
-open System.Text.Json.Serialization
-open FsToolbox.Core
-
 // Suppress
 #nowarn "50001"
 
 module Dms =
+
+    open System
+    open System.Text.Json
+    open System.Text.Json.Serialization
+    open FsToolbox.Core
+    open Xsamf.V1.Common.Utils
 
     type DmsCheckIn =
         { Reference: string
           TenantReference: string
           WatcherReference: string
           Timestamp: DateTime
-          Auth: AuthType
+          Auth: MonitoringAuthType
+          Metadata: Map<string, string>
+          Tags: string list }
+
+    /// <summary>
+    /// A special type of DMS check in that requires no auth or verification.
+    /// This can be useful for simple situations,
+    /// however there are not checks to validate where the check in comes from.
+    /// This requires the related watcher to have AllowAnonymous set to true. 
+    /// </summary>
+    type AnonymousDmsCheckIn =
+        { Reference: string
+          WatcherReference: string
+          Timestamp: DateTime
           Metadata: Map<string, string>
           Tags: string list }
 
@@ -49,7 +63,7 @@ module Dms =
                         |> Option.map DmsRule.FromJson
                         |> Option.defaultValue (Error "Missing `ruleB` property")
                     with
-                    | Ok ruleA, Ok ruleB -> DmsRule.And (ruleA, ruleB) |> Ok
+                    | Ok ruleA, Ok ruleB -> DmsRule.And(ruleA, ruleB) |> Ok
                     | Error e, _ -> Error e
                     | _, Error e -> Error e
                 | "or" ->
@@ -61,9 +75,25 @@ module Dms =
                         |> Option.map DmsRule.FromJson
                         |> Option.defaultValue (Error "Missing `ruleB` property")
                     with
-                    | Ok ruleA, Ok ruleB -> DmsRule.Or (ruleA, ruleB) |> Ok
+                    | Ok ruleA, Ok ruleB -> DmsRule.Or(ruleA, ruleB) |> Ok
                     | Error e, _ -> Error e
                     | _, Error e -> Error e
+                | "all" ->
+                    match
+                        Json.tryGetArrayProperty "rules" element
+                        |> Option.map (List.map DmsRule.FromJson >> aggregateStringErrors "Unable to create rules")
+                        |> Option.defaultValue (Error "Missing `rules` property")
+                    with
+                    | Ok rules -> DmsRule.All rules |> Ok
+                    | Error e -> Error e
+                | "any" ->
+                    match
+                        Json.tryGetArrayProperty "rules" element
+                        |> Option.map (List.map DmsRule.FromJson >> aggregateStringErrors "Unable to create rules")
+                        |> Option.defaultValue (Error "Missing `rules` property")
+                    with
+                    | Ok rules -> DmsRule.Any rules |> Ok
+                    | Error e -> Error e
                 | _ -> Error $"Unknown rule type: `{t}`"
             | None -> Error "Missing `type` property"
 
@@ -167,6 +197,7 @@ module Dms =
             EntityReference: string
             Reference: string
             Name: string
+            AllowAnonymous: bool
             NextCheckInTime: DateTime
             GracePeriod: TimeSpan
             Actions: DmsAction list
