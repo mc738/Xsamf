@@ -1,4 +1,4 @@
-namespace Xsamf.UnitTests.Domain.Monitoring
+namespace Xsamf.UnitTests.Domain.Monitoring.Activities
 
 open System
 open Microsoft.VisualStudio.TestTools.UnitTesting
@@ -40,3 +40,6 @@ type ActivityDomainRulesTests() =
         let rule = ActivityRule.IsCategory ActivityCategory.Error
 
         Assert.IsFalse(rule.Test activity)
+        
+        
+
