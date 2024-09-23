@@ -48,9 +48,45 @@ module Activities =
           WatcherReference: string
           Timestamp: DateTime
           // TODO add more
+          Auth: MonitoringAuthType
           Category: ActivityCategory
           Metadata: Map<string, string>
           Tags: string list }
+
+    type ActivityHasher =
+        { Steps: ActivityIncidentHasherStep list
+          Separator: string option
+          HashAlgorithm: HashAlgorithm }
+
+        member ah.Generate(activity: Activity) =
+
+
+            ()
+
+    and ActivityIncidentHasherStep =
+        | AddTagIfExists of Tag: string * Default: string option
+        | AddTimestamp of Format: string option
+        | AddCategory
+        | AddConstant of Value: string
+        | AddWatcherName
+        | AddActionName
+        | AddMetadataValueIfExists of Key: string * Default: string option
+
+        member step.GetValue(activity: Activity, additionTags: string list, additionMetadata: Map<string,string>) =
+            match step with
+            | AddTagIfExists(tag, defaultValue) ->
+                match activity.Tags |> List.contains tag || additionTags.Tags |> List.contains tag, defaultValue with
+                | true, _ -> tag
+                | false, Some value -> value
+                | false, None -> ""
+            | AddTimestamp format -> activity.Timestamp.ToString(format |> Option.defaultValue "u")
+            | AddCategory -> activity.Category.Serialize()
+            | AddMetadataValueIfExists(key, defaultValue) ->
+                activity.Metadata.TryFind key
+                |> 
+                |> Option.orElse defaultValue
+                |> Option.defaultValue ""
+
 
     [<RequireQualifiedAccess>]
     type ActivityRule =
