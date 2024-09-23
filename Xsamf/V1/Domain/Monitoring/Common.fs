@@ -1,5 +1,7 @@
 namespace Xsamf.V1.Domain.Monitoring
 
+open System.Text.Json
+
 [<AutoOpen>]
 module Common =
     
@@ -9,6 +11,12 @@ module Common =
         | CloseIncident
     
     [<RequireQualifiedAccess>]
-    type AuthType =
+    type MonitoringAuthType =
         | None
         | Token of string
+        
+        //static member FromJson(element: JsonElement) =
+        //    match element.tryGet
+        //    
+        //    
+        //    ()
