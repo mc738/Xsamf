@@ -58,7 +58,7 @@ module Activities =
           Separator: string option
           HashAlgorithm: HashAlgorithm }
 
-        member ah.Generate(activity: Activity) =
+        member ah.Generate(activity: Activity, action: ActivityAction, watcher: ActivityWatcher) =
 
 
             ()
@@ -68,9 +68,10 @@ module Activities =
         | AddTimestamp of Format: string option
         | AddCategory
         | AddConstant of Value: string
+        | AddMetadataValueIfExists of Key: string * Default: string option
         | AddWatcherName
         | AddActionName
-        | AddMetadataValueIfExists of Key: string * Default: string option
+        | AddType
 
         member step.GetValue(activity: Activity, additionTags: string list, additionMetadata: Map<string,string>) =
             match step with
@@ -321,3 +322,5 @@ module Activities =
                     r |> List.filter (fun aar -> aar.HasOutcomes())
                 else
                     r
+                    
+                    
