@@ -53,42 +53,6 @@ module Activities =
           Metadata: Map<string, string>
           Tags: string list }
 
-    type ActivityHasher =
-        { Steps: ActivityIncidentHasherStep list
-          Separator: string option
-          HashAlgorithm: HashAlgorithm }
-
-        member ah.Generate(activity: Activity, action: ActivityAction, watcher: ActivityWatcher) =
-
-
-            ()
-
-    and ActivityIncidentHasherStep =
-        | AddTagIfExists of Tag: string * Default: string option
-        | AddTimestamp of Format: string option
-        | AddCategory
-        | AddConstant of Value: string
-        | AddMetadataValueIfExists of Key: string * Default: string option
-        | AddWatcherName
-        | AddActionName
-        | AddType
-
-        member step.GetValue(activity: Activity, additionTags: string list, additionMetadata: Map<string,string>) =
-            match step with
-            | AddTagIfExists(tag, defaultValue) ->
-                match activity.Tags |> List.contains tag || additionTags.Tags |> List.contains tag, defaultValue with
-                | true, _ -> tag
-                | false, Some value -> value
-                | false, None -> ""
-            | AddTimestamp format -> activity.Timestamp.ToString(format |> Option.defaultValue "u")
-            | AddCategory -> activity.Category.Serialize()
-            | AddMetadataValueIfExists(key, defaultValue) ->
-                activity.Metadata.TryFind key
-                |> 
-                |> Option.orElse defaultValue
-                |> Option.defaultValue ""
-
-
     [<RequireQualifiedAccess>]
     type ActivityRule =
         | IsCategory of Category: ActivityCategory
@@ -276,25 +240,45 @@ module Activities =
             match aa.Rule.Test(activity, bespokeHandlers) with
             | true ->
                 ({ Name = aa.Name
+                   Activity = activity 
                    Outcomes = aa.Outcomes
                    AdditionMetadata = aa.AdditionMetadata
                    AdditionTags = aa.AdditionTags }
                 : ActivityActionResult)
-            | false -> ActivityActionResult.Empty aa.Name
+            | false -> ActivityActionResult.Empty(aa.Name, activity)
 
     and ActivityActionResult =
         { Name: string
+          Activity: Activity
           Outcomes: ActionOutcome list
-          AdditionMetadata: Map<string, string>
-          AdditionTags: string list }
+          AdditionTags: string list
+          AdditionMetadata: Map<string,string> }
 
-        static member Empty(name: string) =
+        static member Empty(name: string, activity: Activity) =
             { Name = name
+              Activity = activity
               Outcomes = []
-              AdditionMetadata = Map.empty
-              AdditionTags = [] }
+              AdditionTags = []
+              AdditionMetadata = Map.empty  }
 
-        member aar.HasOutcomes() = aar.Outcomes.IsEmpty |> not
+        member aar.HasOutcomes() =
+            
+            aar.Outcomes.IsEmpty |> not
+            
+        /// <summary>
+        /// Get a list of all tags for the result.
+        /// This includes the activity tags, the action tags and the watchr tags.
+        /// </summary>
+        member aar.GetTags() =
+            List.distinct [
+                yield! aar.Activity.Tags
+                yield! aar.AdditionTags
+            ]
+            
+        member aar.GetMetadata() =
+            aar.Activity.Metadata |> Map.fold (fun (map: Map<string, string>) k v -> map.Add(k, v)) aar.AdditionMetadata
+            
+        
 
     type ActivityWatcher =
         {
@@ -323,4 +307,40 @@ module Activities =
                 else
                     r
                     
+    and ActivityHasher =
+        { Steps: ActivityIncidentHasherStep list
+          Separator: string option
+          HashAlgorithm: HashAlgorithm }
+
+        member ah.Generate(activity: Activity, action: ActivityAction, watcher: ActivityWatcher, additionTags: string list, additionMetadata: Map<string,string>) =
+
+
+            ()
+
+    and ActivityIncidentHasherStep =
+        | AddTagIfExists of Tag: string * Default: string option
+        | AddTimestamp of Format: string option
+        | AddCategory
+        | AddConstant of Value: string
+        | AddMetadataValueIfExists of Key: string * Default: string option
+        | AddWatcherName
+        | AddActionName
+        | AddType
+
+        member step.GetValue(activity: Activity, additionTags: string list, additionMetadata: Map<string,string>) =
+            match step with
+            | AddTagIfExists(tag, defaultValue) ->
+                match activity.Tags |> List.contains tag || additionTags.Tags |> List.contains tag, defaultValue with
+                | true, _ -> tag
+                | false, Some value -> value
+                | false, None -> ""
+            | AddTimestamp format -> activity.Timestamp.ToString(format |> Option.defaultValue "u")
+            | AddCategory -> activity.Category.Serialize()
+            | AddMetadataValueIfExists(key, defaultValue) ->
+                activity.Metadata.TryFind key
+                |> 
+                |> Option.orElse defaultValue
+                |> Option.defaultValue ""
+    
+                
                     
