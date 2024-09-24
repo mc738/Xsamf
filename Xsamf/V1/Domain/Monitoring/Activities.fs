@@ -236,7 +236,7 @@ module Activities =
             AdditionTags: string list
         }
 
-        member aa.Handle(activity: Activity, bespokeHandlers: Map<string, Activity -> bool>) =
+        member aa.Handle(activity: Activity, bespokeHandlers: Map<string, Activity -> bool>, watcherName: string, watcherTags: string list, watcherMetadata: Map<string, string>) =
             match aa.Rule.Test(activity, bespokeHandlers) with
             | true ->
                 ({ Name = aa.Name
@@ -276,10 +276,8 @@ module Activities =
             ]
             
         member aar.GetMetadata() =
-            aar.Activity.Metadata |> Map.fold (fun (map: Map<string, string>) k v -> map.Add(k, v)) aar.AdditionMetadata
-            
+            aar.Activity.Metadata |> Map.merge aar.AdditionMetadata
         
-
     type ActivityWatcher =
         {
             Reference: string
@@ -300,12 +298,27 @@ module Activities =
 
         member aw.HandleActivity(activity, bespokeHandlers: Map<string, Activity -> bool>, filterEmpty: bool) =
             aw.Actions
+            |> List.choose (fun a ->
+                match a.Rule.Test(activity, bespokeHandlers) with
+                | true ->
+                    
+                    None
+                | false ->
+                    match filterEmpty with
+                    | true -> None
+                    | false ->
+                        ActivityActionResult.Empty(a.Name, activity) |> Some
+                ) 
+            
+            (*
+            aw.Actions
             |> List.map (fun a -> a.Handle(activity, bespokeHandlers))
             |> fun r ->
                 if filterEmpty then
                     r |> List.filter (fun aar -> aar.HasOutcomes())
                 else
                     r
+            *)
                     
     and ActivityHasher =
         { Steps: ActivityIncidentHasherStep list
