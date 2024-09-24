@@ -12,11 +12,6 @@ module ActionResult =
         match result with
         | ActionResult.Failure failureResult -> result
         | ActionResult.Success foo -> fn () |> ActionResult.bind (fun _ -> result)
-
-module Map =
-    
-    let merge<'TKey, 'TValue when 'TKey : comparison> (mapB: Map<'TKey, 'TValue>) (mapA: Map<'TKey, 'TValue>) =
-        mapA |> Map.fold (fun (state: Map<'TKey, 'TValue>) k v -> state.Add(k, v)) mapB 
         
 type ActivitiesService(store: IXsamfStore) =
 
