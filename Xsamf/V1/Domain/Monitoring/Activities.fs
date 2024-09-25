@@ -6,7 +6,7 @@ module Activities =
     open System.Text.Json
     open FsToolbox.Core
     open Xsamf.V1.Common.Utils
-    
+
     type ActivityHasher =
         { Steps: ActivityIncidentHasherStep list
           Separator: string option
@@ -236,6 +236,7 @@ module Activities =
 
     type ActivityAction =
         {
+            Reference: string
             Name: string
             Rule: ActivityRule
             Outcomes: ActionOutcome list
@@ -252,20 +253,27 @@ module Activities =
             AdditionTags: string list
         }
 
-        member aa.Handle(activity: Activity, bespokeHandlers: Map<string, Activity -> bool>, watcherName: string, watcherTags: string list, watcherMetadata: Map<string, string>) =
+        member aa.Handle
+            (
+                activity: Activity,
+                bespokeHandlers: Map<string, Activity -> bool>,
+                watcherName: string,
+                watcherTags: string list,
+                watcherMetadata: Map<string, string>
+            ) =
             match aa.Rule.Test(activity, bespokeHandlers) with
             | true ->
                 ({ Name = aa.Name
                    Hash = ""
-                   Activity = activity 
+                   Activity = activity
                    Outcomes = aa.Outcomes
                    AdditionMetadata = aa.AdditionMetadata
                    AdditionTags = aa.AdditionTags }
                 : ActivityActionResult)
             | false ->
-                
-                
-                
+
+
+
                 ActivityActionResult.Empty(aa.Name, activity)
 
     and ActivityActionResult =
@@ -274,35 +282,33 @@ module Activities =
           Activity: Activity
           Outcomes: ActionOutcome list
           AdditionTags: string list
-          AdditionMetadata: Map<string,string> }
+          AdditionMetadata: Map<string, string> }
 
         static member Empty(name: string, activity: Activity) =
             { Name = name
               Activity = activity
               Outcomes = []
               AdditionTags = []
-              AdditionMetadata = Map.empty  }
+              AdditionMetadata = Map.empty }
 
         member aar.HasOutcomes() =
-            
+
             aar.Outcomes.IsEmpty |> not
-            
+
         /// <summary>
         /// Get a list of all tags for the result.
         /// This includes the activity tags, the action tags and the watcher tags.
         /// </summary>
         member aar.GetTags() =
-            List.distinct [
-                yield! aar.Activity.Tags
-                yield! aar.AdditionTags
-            ]
-            
+            List.distinct [ yield! aar.Activity.Tags; yield! aar.AdditionTags ]
+
         member aar.GetMetadata() =
             aar.Activity.Metadata |> Map.merge aar.AdditionMetadata
-        
+
     type ActivityWatcher =
         {
             Reference: string
+            Name: string
             TenantReference: string
             EntityReference: string
             Actions: ActivityAction list
@@ -325,32 +331,37 @@ module Activities =
                 | true ->
                     let additionalTags = aw.AdditionTags @ a.AdditionTags
                     let additionalMetadata = a.AdditionMetadata |> Map.merge aw.AdditionMetadata
-                    
+
+                    let allTags = activity.Tags @ additionalTags
+                    let allMetadata = activity.Metadata |> Map.merge additionalMetadata
+
                     let hash =
                         a.Hasher.Steps
-                        |> List.map (fun s ->
+                        |> List.choose (fun s ->
                             match s with
                             | AddTagIfExists(tag, ``default``) ->
-                                activity.Tags @ add |> List.contains tag
-                                
-                            | AddTimestamp format -> failwith "todo"
-                            | AddCategory -> failwith "todo"
-                            | AddConstant value -> failwith "todo"
-                            | AddMetadataValueIfExists(key, ``default``) -> failwith "todo"
-                            | AddWatcherName -> failwith "todo"
-                            | AddActionName -> failwith "todo"
-                            | AddType -> failwith "todo")
-                    
-                    
+                                match allTags |> List.contains tag with
+                                | true -> Some tag
+                                | false -> ``default``
+                            | AddTimestamp format ->
+                                activity.Timestamp.ToString(format |> Option.defaultValue "u") |> Some
+                            | AddCategory -> activity.Category.Serialize() |> Some
+                            | AddConstant value -> Some value
+                            | AddMetadataValueIfExists(key, ``default``) ->
+                                allMetadata.TryFind key
+                                |> Option.orElse ``default``
+                            | AddWatcherName -> Some aw.Name
+                            | AddActionName -> Some aw.Name
+                            | AddType -> Some "activity")
+
+
                     None
                 | false ->
                     match filterEmpty with
                     | true -> None
-                    | false ->
-                        ActivityActionResult.Empty(a.Name, activity) |> Some
-                ) 
-            
-            (*
+                    | false -> ActivityActionResult.Empty(a.Name, activity) |> Some)
+
+(*
             aw.Actions
             |> List.map (fun a -> a.Handle(activity, bespokeHandlers))
             |> fun r ->
