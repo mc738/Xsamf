@@ -6,6 +6,21 @@ module Activities =
     open System.Text.Json
     open FsToolbox.Core
     open Xsamf.V1.Common.Utils
+    
+    type ActivityHasher =
+        { Steps: ActivityIncidentHasherStep list
+          Separator: string option
+          HashAlgorithm: HashAlgorithm }
+
+    and ActivityIncidentHasherStep =
+        | AddTagIfExists of Tag: string * Default: string option
+        | AddTimestamp of Format: string option
+        | AddCategory
+        | AddConstant of Value: string
+        | AddMetadataValueIfExists of Key: string * Default: string option
+        | AddWatcherName
+        | AddActionName
+        | AddType
 
     [<RequireQualifiedAccess>]
     type ActivityCategory =
@@ -224,6 +239,7 @@ module Activities =
             Name: string
             Rule: ActivityRule
             Outcomes: ActionOutcome list
+            Hasher: ActivityHasher
             /// <summary>
             /// A collection of addition metadata that will be added to an activity if the action is triggered.
             /// These will be used for any future processing from this action specifically.
@@ -240,15 +256,21 @@ module Activities =
             match aa.Rule.Test(activity, bespokeHandlers) with
             | true ->
                 ({ Name = aa.Name
+                   Hash = ""
                    Activity = activity 
                    Outcomes = aa.Outcomes
                    AdditionMetadata = aa.AdditionMetadata
                    AdditionTags = aa.AdditionTags }
                 : ActivityActionResult)
-            | false -> ActivityActionResult.Empty(aa.Name, activity)
+            | false ->
+                
+                
+                
+                ActivityActionResult.Empty(aa.Name, activity)
 
     and ActivityActionResult =
         { Name: string
+          Hash: string
           Activity: Activity
           Outcomes: ActionOutcome list
           AdditionTags: string list
@@ -267,7 +289,7 @@ module Activities =
             
         /// <summary>
         /// Get a list of all tags for the result.
-        /// This includes the activity tags, the action tags and the watchr tags.
+        /// This includes the activity tags, the action tags and the watcher tags.
         /// </summary>
         member aar.GetTags() =
             List.distinct [
@@ -301,6 +323,24 @@ module Activities =
             |> List.choose (fun a ->
                 match a.Rule.Test(activity, bespokeHandlers) with
                 | true ->
+                    let additionalTags = aw.AdditionTags @ a.AdditionTags
+                    let additionalMetadata = a.AdditionMetadata |> Map.merge aw.AdditionMetadata
+                    
+                    let hash =
+                        a.Hasher.Steps
+                        |> List.map (fun s ->
+                            match s with
+                            | AddTagIfExists(tag, ``default``) ->
+                                activity.Tags @ add |> List.contains tag
+                                
+                            | AddTimestamp format -> failwith "todo"
+                            | AddCategory -> failwith "todo"
+                            | AddConstant value -> failwith "todo"
+                            | AddMetadataValueIfExists(key, ``default``) -> failwith "todo"
+                            | AddWatcherName -> failwith "todo"
+                            | AddActionName -> failwith "todo"
+                            | AddType -> failwith "todo")
+                    
                     
                     None
                 | false ->
@@ -319,41 +359,3 @@ module Activities =
                 else
                     r
             *)
-                    
-    and ActivityHasher =
-        { Steps: ActivityIncidentHasherStep list
-          Separator: string option
-          HashAlgorithm: HashAlgorithm }
-
-        member ah.Generate(activity: Activity, action: ActivityAction, watcher: ActivityWatcher, additionTags: string list, additionMetadata: Map<string,string>) =
-
-
-            ()
-
-    and ActivityIncidentHasherStep =
-        | AddTagIfExists of Tag: string * Default: string option
-        | AddTimestamp of Format: string option
-        | AddCategory
-        | AddConstant of Value: string
-        | AddMetadataValueIfExists of Key: string * Default: string option
-        | AddWatcherName
-        | AddActionName
-        | AddType
-
-        member step.GetValue(activity: Activity, additionTags: string list, additionMetadata: Map<string,string>) =
-            match step with
-            | AddTagIfExists(tag, defaultValue) ->
-                match activity.Tags |> List.contains tag || additionTags.Tags |> List.contains tag, defaultValue with
-                | true, _ -> tag
-                | false, Some value -> value
-                | false, None -> ""
-            | AddTimestamp format -> activity.Timestamp.ToString(format |> Option.defaultValue "u")
-            | AddCategory -> activity.Category.Serialize()
-            | AddMetadataValueIfExists(key, defaultValue) ->
-                activity.Metadata.TryFind key
-                |> 
-                |> Option.orElse defaultValue
-                |> Option.defaultValue ""
-    
-                
-                    
