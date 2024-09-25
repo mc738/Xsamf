@@ -11,6 +11,13 @@ module Common =
     type ActionOutcome =
         | CreateIncident
         | CloseIncident
+        | CloseAllIncidentsForEntity
+        | ActivateDmsWatcher
+        | DeactivateDmsWatcher
+        | ActivateActivityWatcher
+        | DeactivateActivityWatcher
+        | ActivateProbeWatcher
+        | DeactivateProbeWatcher
     
     [<RequireQualifiedAccess>]
     type MonitoringAuthType =
