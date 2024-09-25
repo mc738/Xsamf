@@ -18,7 +18,9 @@ module Activities =
         | AddCategory
         | AddConstant of Value: string
         | AddMetadataValueIfExists of Key: string * Default: string option
+        | AddWatcherReference
         | AddWatcherName
+        | AddActionReference
         | AddActionName
         | AddType
 
@@ -253,29 +255,6 @@ module Activities =
             AdditionTags: string list
         }
 
-        member aa.Handle
-            (
-                activity: Activity,
-                bespokeHandlers: Map<string, Activity -> bool>,
-                watcherName: string,
-                watcherTags: string list,
-                watcherMetadata: Map<string, string>
-            ) =
-            match aa.Rule.Test(activity, bespokeHandlers) with
-            | true ->
-                ({ Name = aa.Name
-                   Hash = ""
-                   Activity = activity
-                   Outcomes = aa.Outcomes
-                   AdditionMetadata = aa.AdditionMetadata
-                   AdditionTags = aa.AdditionTags }
-                : ActivityActionResult)
-            | false ->
-
-
-
-                ActivityActionResult.Empty(aa.Name, activity)
-
     and ActivityActionResult =
         { Name: string
           Hash: string
@@ -283,17 +262,6 @@ module Activities =
           Outcomes: ActionOutcome list
           AdditionTags: string list
           AdditionMetadata: Map<string, string> }
-
-        static member Empty(name: string, activity: Activity) =
-            { Name = name
-              Activity = activity
-              Outcomes = []
-              AdditionTags = []
-              AdditionMetadata = Map.empty }
-
-        member aar.HasOutcomes() =
-
-            aar.Outcomes.IsEmpty |> not
 
         /// <summary>
         /// Get a list of all tags for the result.
@@ -324,11 +292,12 @@ module Activities =
             AdditionTags: string list
         }
 
-        member aw.HandleActivity(activity, bespokeHandlers: Map<string, Activity -> bool>, filterEmpty: bool) =
+        member aw.HandleActivity(activity, bespokeHandlers: Map<string, Activity -> bool>) =
             aw.Actions
             |> List.choose (fun a ->
-                match a.Rule.Test(activity, bespokeHandlers) with
-                | true ->
+
+                a.Rule.Test(activity, bespokeHandlers)
+                |> Option.mapIfTrue (fun _ ->
                     let additionalTags = aw.AdditionTags @ a.AdditionTags
                     let additionalMetadata = a.AdditionMetadata |> Map.merge aw.AdditionMetadata
 
@@ -348,18 +317,22 @@ module Activities =
                             | AddCategory -> activity.Category.Serialize() |> Some
                             | AddConstant value -> Some value
                             | AddMetadataValueIfExists(key, ``default``) ->
-                                allMetadata.TryFind key
-                                |> Option.orElse ``default``
+                                allMetadata.TryFind key |> Option.orElse ``default``
+                            | AddWatcherReference -> Some aw.Reference
                             | AddWatcherName -> Some aw.Name
-                            | AddActionName -> Some aw.Name
+                            | AddActionReference -> Some a.Reference
+                            | AddActionName -> Some a.Name
                             | AddType -> Some "activity")
+                        |> String.concat (a.Hasher.Separator |> Option.defaultValue "_")
+                        |> a.Hasher.HashAlgorithm.HashString
 
-
-                    None
-                | false ->
-                    match filterEmpty with
-                    | true -> None
-                    | false -> ActivityActionResult.Empty(a.Name, activity) |> Some)
+                    ({ Name = a.Name
+                       Hash = hash
+                       Activity = activity
+                       Outcomes = a.Outcomes
+                       AdditionTags = additionalTags
+                       AdditionMetadata = additionalMetadata }
+                    : ActivityActionResult)))
 
 (*
             aw.Actions
