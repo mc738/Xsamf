@@ -1,12 +1,11 @@
 namespace Xsamf.V1.Store.Shared
 
+open Freql.Core.Common.Types
 open FsToolbox.Core.Results
-open Xsamf.V1.Store.Shared.Domain
 
 type IXsamfStore =
+
+    inherit IXsamfStoreReader
+    inherit IXsamfStoreWriter
     
-    abstract member AddTenant: NewTenant -> ActionResult<unit>
-    
-    abstract member GetTenant: Reference: string ->  FetchResult<TenantDetails>
-    
-    abstract member ListTenants: Request: ListTenantsRequest -> FetchResult<TenantOverview list>
+    abstract ExecuteInTransaction<'T>: Fn: (IXsamfStore -> 'T) -> Result<'T, string>
