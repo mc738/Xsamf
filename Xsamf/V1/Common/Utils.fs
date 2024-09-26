@@ -34,3 +34,22 @@ module Utils =
 
         let merge<'TKey, 'TValue when 'TKey: comparison> (mapB: Map<'TKey, 'TValue>) (mapA: Map<'TKey, 'TValue>) =
             mapA |> Map.fold (fun (state: Map<'TKey, 'TValue>) k v -> state.Add(k, v)) mapB
+
+    module Option =
+
+        let fromBool (value: bool) =
+            match value with
+            | true -> Some()
+            | false -> None
+
+        let bindIfTrue<'T> (fn: unit -> 'T option) (value: bool) = value |> fromBool |> Option.bind fn
+
+        let mapIfTrue<'T> (fn: unit -> 'T) (value: bool) = value |> fromBool |> Option.map fn
+        
+    module ActionResult =
+
+        let ifSuccessful<'T, 'U> (fn: unit -> ActionResult<'U>) (result: ActionResult<'T>) =
+            match result with
+            | ActionResult.Failure failureResult -> result
+            | ActionResult.Success foo -> fn () |> ActionResult.bind (fun _ -> result)
+            
