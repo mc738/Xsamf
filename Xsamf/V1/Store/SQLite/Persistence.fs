@@ -30,7 +30,7 @@ module private Utils =
 /// Records representing database bindings for `records`.
 /// </summary>
 /// <remarks>
-/// Module generated on 28/09/2024 19:48:28 (utc) via Freql.Tools.
+/// Module generated on 29/09/2024 10:47:56 (utc) via Freql.Tools.
 /// </remarks>
 [<RequireQualifiedAccess>]
 module Records =
@@ -38,11 +38,11 @@ module Records =
     /// A record representing a row in the table `entities`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type Entity =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("description")>] Description: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
@@ -50,8 +50,8 @@ module Records =
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
               Name = String.Empty
               Description = String.Empty
               CreatedOn = DateTime.UtcNow
@@ -61,26 +61,26 @@ module Records =
         static member CreateTableSql() = """
         CREATE TABLE "entities"
 (
-    reference        TEXT    not null
+    id          TEXT    not null
         constraint entities_pk
             primary key,
-    tenant_reference TEXT    not null
-        constraint entities_tenants_reference_fk
-            references tenants (reference),
-    name             TEXT    not null,
-    description      TEXT    not null,
-    created_on       TEXT    not null,
-    updated_on       TEXT    not null,
-    active           integer not null,
+    tenant_id   TEXT    not null
+        constraint entities_tenants_id_fk
+            references tenants,
+    name        TEXT    not null,
+    description TEXT    not null,
+    created_on  TEXT    not null,
+    updated_on  TEXT    not null,
+    active      integer not null,
     constraint entities_uk
-        unique (tenant_reference, name)
+        unique (tenant_id, name)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              entities.`reference`,
-              entities.`tenant_reference`,
+              entities.`id`,
+              entities.`tenant_id`,
               entities.`name`,
               entities.`description`,
               entities.`created_on`,
@@ -113,20 +113,20 @@ module Records =
     /// A record representing a row in the table `project_entry_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type ProjectEntryLinks =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("projectReference")>] ProjectReference: string
-          [<JsonPropertyName("entityReference")>] EntityReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("projectId")>] ProjectId: string
+          [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              ProjectReference = String.Empty
-              EntityReference = String.Empty
+            { Id = String.Empty
+              ProjectId = String.Empty
+              EntityId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -134,28 +134,28 @@ module Records =
         static member CreateTableSql() = """
         CREATE TABLE "project_entry_links"
 (
-    reference         TEXT    not null
+    id         TEXT    not null
         constraint project_entry_links_pk
             primary key,
-    project_reference TEXT    not null
-        constraint project_entry_links_projects_reference_fk
-            references projects (reference),
-    entity_reference  TEXT    not null
-        constraint project_entry_links_entities_reference_fk
-            references entities (reference),
-    created_on        TEXT    not null,
-    updated_on        TEXT    not null,
-    active            integer not null,
+    project_id TEXT    not null
+        constraint project_entry_links_projects_id_fk
+            references projects,
+    entity_id  TEXT    not null
+        constraint project_entry_links_entities_id_fk
+            references entities (id),
+    created_on TEXT    not null,
+    updated_on TEXT    not null,
+    active     integer not null,
     constraint project_entry_links_uk
-        unique (project_reference, entity_reference)
+        unique (project_id, entity_id)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              project_entry_links.`reference`,
-              project_entry_links.`project_reference`,
-              project_entry_links.`entity_reference`,
+              project_entry_links.`id`,
+              project_entry_links.`project_id`,
+              project_entry_links.`entity_id`,
               project_entry_links.`created_on`,
               project_entry_links.`updated_on`,
               project_entry_links.`active`
@@ -182,31 +182,31 @@ module Records =
     /// A record representing a row in the table `project_team_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type ProjectTeamClaim =
-        { [<JsonPropertyName("linkReference")>] LinkReference: string
+        { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("claim")>] Claim: string }
     
         static member Blank() =
-            { LinkReference = String.Empty
+            { LinkId = String.Empty
               Claim = String.Empty }
     
         static member CreateTableSql() = """
         CREATE TABLE "project_team_claims"
 (
-    link_reference TEXT not null
-        constraint project_team_claims_project_team_links_team_reference_fk
-            references project_team_links (refer),
-    claim          TEXT not null,
+    link_id TEXT not null
+        constraint project_team_claims_project_team_links_id_fk
+            references project_team_links,
+    claim   TEXT not null,
     constraint project_team_claims_pk
-        primary key (link_reference, claim)
+        primary key (link_id, claim)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              project_team_claims.`link_reference`,
+              project_team_claims.`link_id`,
               project_team_claims.`claim`
         FROM project_team_claims
         """
@@ -231,20 +231,20 @@ module Records =
     /// A record representing a row in the table `project_team_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type ProjectTeamLink =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("projectReference")>] ProjectReference: string
-          [<JsonPropertyName("teamReference")>] TeamReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("projectId")>] ProjectId: string
+          [<JsonPropertyName("teamId")>] TeamId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              ProjectReference = String.Empty
-              TeamReference = String.Empty
+            { Id = String.Empty
+              ProjectId = String.Empty
+              TeamId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -252,28 +252,28 @@ module Records =
         static member CreateTableSql() = """
         CREATE TABLE "project_team_links"
 (
-    reference         TEXT    not null
+    id         TEXT    not null
         constraint project_team_links_pk
             primary key,
-    project_reference TEXT    not null
-        constraint project_team_links_projects_reference_fk
-            references projects (reference),
-    team_reference    TEXT    not null
-        constraint project_team_links_teams_reference_fk
-            references teams (reference),
-    created_on        TEXT    not null,
-    updated_on        TEXT    not null,
-    active            integer not null,
+    project_id TEXT    not null
+        constraint project_team_links_projects_id_fk
+            references projects,
+    team_id    TEXT    not null
+        constraint project_team_links_teams_id_fk
+            references teams,
+    created_on TEXT    not null,
+    updated_on TEXT    not null,
+    active     integer not null,
     constraint project_team_links_uk
-        unique (project_reference, team_reference)
+        unique (project_id, team_id)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              project_team_links.`reference`,
-              project_team_links.`project_reference`,
-              project_team_links.`team_reference`,
+              project_team_links.`id`,
+              project_team_links.`project_id`,
+              project_team_links.`team_id`,
               project_team_links.`created_on`,
               project_team_links.`updated_on`,
               project_team_links.`active`
@@ -286,12 +286,12 @@ module Records =
     
         static member CreateTriggersSql() =
             [ """
-              CREATE TRIGGER project_team_links_before_insert_ensure_tenant_references_match_trigger
+              CREATE TRIGGER project_team_links_before_insert_ensure_tenant_ids_match_trigger
     BEFORE INSERT ON project_team_links
     BEGIN
         SELECT RAISE(ABORT, 'A project and team must belong to the same tenant if they are to be linked.')
-        WHERE (SELECT tenant_reference FROM teams WHERE teams.reference = NEW.team_reference) != 
-              (SELECT tenant_reference FROM projects WHERE projects.reference = NEW.project_reference);
+        WHERE (SELECT tenant_id FROM teams WHERE teams.id = NEW.team_id) != 
+              (SELECT tenant_id FROM projects WHERE projects.id = NEW.project_id);
     END
               """ ]
     
@@ -309,34 +309,34 @@ module Records =
     /// A record representing a row in the table `project_team_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type ProjectTeamMetadata =
-        { [<JsonPropertyName("linkReference")>] LinkReference: string
+        { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
     
         static member Blank() =
-            { LinkReference = String.Empty
+            { LinkId = String.Empty
               ItemKey = String.Empty
               ItemValue = String.Empty }
     
         static member CreateTableSql() = """
         CREATE TABLE "project_team_metadata"
 (
-    link_reference TEXT not null
-        constraint project_team_metadata_project_team_links_reference_fk
-            references project_team_links (reference),
-    item_key       TEXT not null,
-    item_value     TEXT not null,
+    link_id    TEXT not null
+        constraint project_team_metadata_project_team_links_id_fk
+            references project_team_links (id),
+    item_key   TEXT not null,
+    item_value TEXT not null,
     constraint project_team_metadata_pk
-        primary key (link_reference, item_key)
+        primary key (link_id, item_key)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              project_team_metadata.`link_reference`,
+              project_team_metadata.`link_id`,
               project_team_metadata.`item_key`,
               project_team_metadata.`item_value`
         FROM project_team_metadata
@@ -362,19 +362,19 @@ module Records =
     /// A record representing a row in the table `projects`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type Project =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool option }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
               Name = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
@@ -383,23 +383,23 @@ module Records =
         static member CreateTableSql() = """
         CREATE TABLE "projects"
 (
-    reference        TEXT not null
+    id         TEXT not null
         constraint projects_pk
             primary key,
-    tenant_reference TEXT not null
-        constraint projects_tenants_reference_fk
-            references tenants (reference),
-    name             TEXT not null,
-    created_on       TEXT not null,
-    updated_on       TEXT not null,
-    active           integer
+    tenant_id  TEXT not null
+        constraint projects_tenants_id_fk
+            references tenants,
+    name       TEXT not null,
+    created_on TEXT not null,
+    updated_on TEXT not null,
+    active     integer
 )
         """
     
         static member SelectSql() = """
         SELECT
-              projects.`reference`,
-              projects.`tenant_reference`,
+              projects.`id`,
+              projects.`tenant_id`,
               projects.`name`,
               projects.`created_on`,
               projects.`updated_on`,
@@ -427,31 +427,31 @@ module Records =
     /// A record representing a row in the table `team_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type TeamUserClaim =
-        { [<JsonPropertyName("linkReference")>] LinkReference: string
+        { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("claim")>] Claim: string }
     
         static member Blank() =
-            { LinkReference = String.Empty
+            { LinkId = String.Empty
               Claim = String.Empty }
     
         static member CreateTableSql() = """
         CREATE TABLE "team_user_claims"
 (
-    link_reference TEXT not null
-        constraint team_user_claims_project_team_links_reference_fk
-            references project_team_links (reference),
-    claim          TEXT not null,
+    link_id TEXT not null
+        constraint team_user_claims_project_team_links_id_fk
+            references project_team_links (id),
+    claim   TEXT not null,
     constraint team_user_claims_pk
-        primary key (link_reference, claim)
+        primary key (link_id, claim)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              team_user_claims.`link_reference`,
+              team_user_claims.`link_id`,
               team_user_claims.`claim`
         FROM team_user_claims
         """
@@ -476,20 +476,20 @@ module Records =
     /// A record representing a row in the table `team_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type TeamUser =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("teamReference")>] TeamReference: string
-          [<JsonPropertyName("userReference")>] UserReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("teamId")>] TeamId: string
+          [<JsonPropertyName("userId")>] UserId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TeamReference = String.Empty
-              UserReference = String.Empty
+            { Id = String.Empty
+              TeamId = String.Empty
+              UserId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -497,28 +497,28 @@ module Records =
         static member CreateTableSql() = """
         CREATE TABLE "team_users"
 (
-    reference      TEXT    not null
+    id         TEXT    not null
         constraint team_users_pk
             primary key,
-    team_reference TEXT    not null
-        constraint team_user_teams_reference_fk
-            references teams (reference),
-    user_reference TEXT    not null
-        constraint team_user_users_reference_fk
-            references users (reference),
-    created_on     TEXT    not null,
-    updated_on     TEXT    not null,
-    active         integer not null,
+    team_id    TEXT    not null
+        constraint team_user_team_id_fk
+            references teams,
+    user_id    TEXT    not null
+        constraint team_user_users_id_fk
+            references users,
+    created_on TEXT    not null,
+    updated_on TEXT    not null,
+    active     integer not null,
     constraint team_user_uk
-        unique (team_reference, user_reference)
+        unique (team_id, user_id)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              team_users.`reference`,
-              team_users.`team_reference`,
-              team_users.`user_reference`,
+              team_users.`id`,
+              team_users.`team_id`,
+              team_users.`user_id`,
               team_users.`created_on`,
               team_users.`updated_on`,
               team_users.`active`
@@ -545,35 +545,35 @@ module Records =
     /// A record representing a row in the table `teams`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type Team =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
           [<JsonPropertyName("name")>] Name: string }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
               Name = String.Empty }
     
         static member CreateTableSql() = """
         CREATE TABLE "teams"
 (
-    reference        TEXT not null
+    id        TEXT not null
         constraint teams_pk
             primary key,
-    tenant_reference TEXT not null
-        constraint teams_tenants_reference_fk
-            references tenants (reference),
-    name             TEXT not null
+    tenant_id TEXT not null
+        constraint teams_tenants_id_fk
+            references tenants,
+    name      TEXT not null
 )
         """
     
         static member SelectSql() = """
         SELECT
-              teams.`reference`,
-              teams.`tenant_reference`,
+              teams.`id`,
+              teams.`tenant_id`,
               teams.`name`
         FROM teams
         """
@@ -598,31 +598,31 @@ module Records =
     /// A record representing a row in the table `tenant_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type TenantUserClaim =
-        { [<JsonPropertyName("tenantUserReference")>] TenantUserReference: string
+        { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
           [<JsonPropertyName("claim")>] Claim: string }
     
         static member Blank() =
-            { TenantUserReference = String.Empty
+            { TenantUserId = String.Empty
               Claim = String.Empty }
     
         static member CreateTableSql() = """
         CREATE TABLE "tenant_user_claims"
 (
-    tenant_user_reference TEXT not null
-        constraint tenant_user_claims_tenant_users_reference_fk
-            references tenant_users(reference),
-    claim                 TEXT not null,
+    tenant_user_id TEXT not null
+        constraint tenant_user_claims_tenant_user_claims_id_fk
+            references tenant_user_claims (id),
+    claim          TEXT not null,
     constraint tenant_user_claims_pk
-        primary key (tenant_user_reference, claim)
+        primary key (tenant_user_id, claim)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              tenant_user_claims.`tenant_user_reference`,
+              tenant_user_claims.`tenant_user_id`,
               tenant_user_claims.`claim`
         FROM tenant_user_claims
         """
@@ -647,34 +647,34 @@ module Records =
     /// A record representing a row in the table `tenant_user_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type TenantUserMetadataItem =
-        { [<JsonPropertyName("tenantUserReference")>] TenantUserReference: string
+        { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
     
         static member Blank() =
-            { TenantUserReference = String.Empty
+            { TenantUserId = String.Empty
               ItemKey = String.Empty
               ItemValue = String.Empty }
     
         static member CreateTableSql() = """
         CREATE TABLE "tenant_user_metadata"
 (
-    tenant_user_reference TEXT not null
-        constraint tenant_user_metadata_tenant_users_tenant_reference_fk
-            references tenant_users (reference),
-    item_key              TEXT not null,
-    item_value            TEXT not null,
+    tenant_user_id TEXT not null
+        constraint tenant_user_metadata_tenant_users_id_fk
+            references tenant_users,
+    item_key       TEXT not null,
+    item_value     TEXT not null,
     constraint tenant_user_metadata_pk
-        primary key (tenant_user_reference, item_key)
+        primary key (tenant_user_id, item_key)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              tenant_user_metadata.`tenant_user_reference`,
+              tenant_user_metadata.`tenant_user_id`,
               tenant_user_metadata.`item_key`,
               tenant_user_metadata.`item_value`
         FROM tenant_user_metadata
@@ -700,20 +700,20 @@ module Records =
     /// A record representing a row in the table `tenant_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type TenantUser =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
-          [<JsonPropertyName("userReference")>] UserReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
+          [<JsonPropertyName("userId")>] UserId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
-              UserReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
+              UserId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -721,28 +721,28 @@ module Records =
         static member CreateTableSql() = """
         CREATE TABLE "tenant_users"
 (
-    reference        TEXT    not null
+    id         TEXT    not null
         constraint tenant_users_pk
             primary key,
-    tenant_reference TEXT    not null
-        constraint tenant_users_tenants_reference_fk
-            references tenants (reference),
-    user_reference   TEXT    not null
-        constraint tenant_users_users_reference_fk
-            references users (reference),
-    created_on       TEXT    not null,
-    updated_on       TEXT    not null,
-    active           integer not null,
+    tenant_id  TEXT    not null
+        constraint tenant_users_tenants_id_fk
+            references tenants,
+    user_id    TEXT    not null
+        constraint tenant_users_users_id_fk
+            references users,
+    created_on TEXT    not null,
+    updated_on TEXT    not null,
+    active     integer not null,
     constraint tenant_users_uk
-        unique (tenant_reference, user_reference)
+        unique (tenant_id, user_id)
 )
         """
     
         static member SelectSql() = """
         SELECT
-              tenant_users.`reference`,
-              tenant_users.`tenant_reference`,
-              tenant_users.`user_reference`,
+              tenant_users.`id`,
+              tenant_users.`tenant_id`,
+              tenant_users.`user_id`,
               tenant_users.`created_on`,
               tenant_users.`updated_on`,
               tenant_users.`active`
@@ -769,31 +769,32 @@ module Records =
     /// A record representing a row in the table `tenants`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type Tenant =
-        { [<JsonPropertyName("reference")>] Reference: Guid
+        { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
+            { Id = String.Empty
               Name = String.Empty
               Active = true }
     
         static member CreateTableSql() = """
         CREATE TABLE "tenants"
 (
-    reference TEXT not null
+    id     TEXT    not null
         constraint tenants_pk
             primary key,
-    name      TEXT not null
-, active integer not null)
+    name   TEXT    not null,
+    active integer not null
+)
         """
     
         static member SelectSql() = """
         SELECT
-              tenants.`reference`,
+              tenants.`id`,
               tenants.`name`,
               tenants.`active`
         FROM tenants
@@ -819,10 +820,10 @@ module Records =
     /// A record representing a row in the table `users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type User =
-        { [<JsonPropertyName("reference")>] Reference: Guid
+        { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
@@ -830,7 +831,7 @@ module Records =
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
+            { Id = String.Empty
               Name = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
@@ -838,18 +839,22 @@ module Records =
               Active = true }
     
         static member CreateTableSql() = """
-        CREATE TABLE users
+        CREATE TABLE "users"
 (
-    reference TEXT not null
+    id          TEXT    not null
         constraint users_pk
             primary key,
-    name      TEXT not null
-, created_on TEXT not null, updated_on TEXT not null, system_user integer not null, active integer not null)
+    name        TEXT    not null,
+    created_on  TEXT    not null,
+    updated_on  TEXT    not null,
+    system_user integer not null,
+    active      integer not null
+)
         """
     
         static member SelectSql() = """
         SELECT
-              users.`reference`,
+              users.`id`,
               users.`name`,
               users.`created_on`,
               users.`updated_on`,
@@ -874,18 +879,18 @@ module Records =
                   User.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
-/// Module generated on 28/09/2024 19:48:28 (utc) via Freql.Tools.
+/// Module generated on 29/09/2024 10:47:56 (utc) via Freql.Tools.
 [<RequireQualifiedAccess>]
 module Parameters =
     /// <summary>
     /// A record representing a new row in the table `entities`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewEntity =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("description")>] Description: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
@@ -893,8 +898,8 @@ module Parameters =
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
               Name = String.Empty
               Description = String.Empty
               CreatedOn = DateTime.UtcNow
@@ -905,20 +910,20 @@ module Parameters =
     /// A record representing a new row in the table `project_entry_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewProjectEntryLinks =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("projectReference")>] ProjectReference: string
-          [<JsonPropertyName("entityReference")>] EntityReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("projectId")>] ProjectId: string
+          [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              ProjectReference = String.Empty
-              EntityReference = String.Empty
+            { Id = String.Empty
+              ProjectId = String.Empty
+              EntityId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -927,34 +932,34 @@ module Parameters =
     /// A record representing a new row in the table `project_team_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewProjectTeamClaim =
-        { [<JsonPropertyName("linkReference")>] LinkReference: string
+        { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("claim")>] Claim: string }
     
         static member Blank() =
-            { LinkReference = String.Empty
+            { LinkId = String.Empty
               Claim = String.Empty }
     
     /// <summary>
     /// A record representing a new row in the table `project_team_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewProjectTeamLink =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("projectReference")>] ProjectReference: string
-          [<JsonPropertyName("teamReference")>] TeamReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("projectId")>] ProjectId: string
+          [<JsonPropertyName("teamId")>] TeamId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              ProjectReference = String.Empty
-              TeamReference = String.Empty
+            { Id = String.Empty
+              ProjectId = String.Empty
+              TeamId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -963,15 +968,15 @@ module Parameters =
     /// A record representing a new row in the table `project_team_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewProjectTeamMetadata =
-        { [<JsonPropertyName("linkReference")>] LinkReference: string
+        { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
     
         static member Blank() =
-            { LinkReference = String.Empty
+            { LinkId = String.Empty
               ItemKey = String.Empty
               ItemValue = String.Empty }
     
@@ -979,19 +984,19 @@ module Parameters =
     /// A record representing a new row in the table `projects`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewProject =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool option }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
               Name = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
@@ -1001,34 +1006,34 @@ module Parameters =
     /// A record representing a new row in the table `team_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTeamUserClaim =
-        { [<JsonPropertyName("linkReference")>] LinkReference: string
+        { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("claim")>] Claim: string }
     
         static member Blank() =
-            { LinkReference = String.Empty
+            { LinkId = String.Empty
               Claim = String.Empty }
     
     /// <summary>
     /// A record representing a new row in the table `team_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTeamUser =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("teamReference")>] TeamReference: string
-          [<JsonPropertyName("userReference")>] UserReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("teamId")>] TeamId: string
+          [<JsonPropertyName("userId")>] UserId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TeamReference = String.Empty
-              UserReference = String.Empty
+            { Id = String.Empty
+              TeamId = String.Empty
+              UserId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -1037,45 +1042,45 @@ module Parameters =
     /// A record representing a new row in the table `teams`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTeam =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
           [<JsonPropertyName("name")>] Name: string }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
               Name = String.Empty }
     
     /// <summary>
     /// A record representing a new row in the table `tenant_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTenantUserClaim =
-        { [<JsonPropertyName("tenantUserReference")>] TenantUserReference: string
+        { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
           [<JsonPropertyName("claim")>] Claim: string }
     
         static member Blank() =
-            { TenantUserReference = String.Empty
+            { TenantUserId = String.Empty
               Claim = String.Empty }
     
     /// <summary>
     /// A record representing a new row in the table `tenant_user_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTenantUserMetadataItem =
-        { [<JsonPropertyName("tenantUserReference")>] TenantUserReference: string
+        { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
     
         static member Blank() =
-            { TenantUserReference = String.Empty
+            { TenantUserId = String.Empty
               ItemKey = String.Empty
               ItemValue = String.Empty }
     
@@ -1083,20 +1088,20 @@ module Parameters =
     /// A record representing a new row in the table `tenant_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTenantUser =
-        { [<JsonPropertyName("reference")>] Reference: Guid
-          [<JsonPropertyName("tenantReference")>] TenantReference: string
-          [<JsonPropertyName("userReference")>] UserReference: string
+        { [<JsonPropertyName("id")>] Id: string
+          [<JsonPropertyName("tenantId")>] TenantId: string
+          [<JsonPropertyName("userId")>] UserId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
-              TenantReference = String.Empty
-              UserReference = String.Empty
+            { Id = String.Empty
+              TenantId = String.Empty
+              UserId = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               Active = true }
@@ -1105,15 +1110,15 @@ module Parameters =
     /// A record representing a new row in the table `tenants`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewTenant =
-        { [<JsonPropertyName("reference")>] Reference: Guid
+        { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
+            { Id = String.Empty
               Name = String.Empty
               Active = true }
     
@@ -1121,10 +1126,10 @@ module Parameters =
     /// A record representing a new row in the table `users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This record was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     type NewUser =
-        { [<JsonPropertyName("reference")>] Reference: Guid
+        { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("name")>] Name: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
           [<JsonPropertyName("updatedOn")>] UpdatedOn: DateTime
@@ -1132,14 +1137,14 @@ module Parameters =
           [<JsonPropertyName("active")>] Active: bool }
     
         static member Blank() =
-            { Reference = Guid.NewGuid()
+            { Id = String.Empty
               Name = String.Empty
               CreatedOn = DateTime.UtcNow
               UpdatedOn = DateTime.UtcNow
               SystemUser = 0L
               Active = true }
     
-/// Module generated on 28/09/2024 19:48:28 (utc) via Freql.Tools.
+/// Module generated on 29/09/2024 10:47:56 (utc) via Freql.Tools.
 [<RequireQualifiedAccess>]
 module Operations =
 
@@ -1154,7 +1159,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1173,7 +1178,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1196,7 +1201,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1215,7 +1220,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1238,7 +1243,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1257,7 +1262,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1280,7 +1285,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1299,7 +1304,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1322,7 +1327,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1341,7 +1346,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1364,7 +1369,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1383,7 +1388,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1406,7 +1411,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1425,7 +1430,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1448,7 +1453,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1467,7 +1472,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1490,7 +1495,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1509,7 +1514,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1532,7 +1537,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1551,7 +1556,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1574,7 +1579,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1593,7 +1598,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1616,7 +1621,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1635,7 +1640,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1658,7 +1663,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1677,7 +1682,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1700,7 +1705,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1719,7 +1724,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 28/09/2024 19:48:28
+    /// This function was generated via Freql.Tools on 29/09/2024 10:47:56
     /// </remarks>
     /// <example>
     /// <code>
@@ -1744,7 +1749,6 @@ module Initialization =
           Records.ProjectTeamLink.InitializationSql checkIfExists
           Records.Entity.InitializationSql checkIfExists
           Records.TenantUserMetadataItem.InitializationSql checkIfExists
-          Records.TenantUserClaim.InitializationSql checkIfExists
           Records.TeamUser.InitializationSql checkIfExists
           Records.TeamUserClaim.InitializationSql checkIfExists
           Records.ProjectTeamMetadata.InitializationSql checkIfExists
