@@ -18,3 +18,4 @@ type SQLiteXsamfStore(ctx: SqliteContext) =
         member this.GetDmsWatcher(reference) = failwith "todo"
         member this.ReaderTest() = failwith "todo"
         member this.WriteTest() = failwith "todo"
+        member this.DmsCheckIn(var0) = failwith "todo"
