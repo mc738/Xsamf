@@ -30,7 +30,7 @@ module private Utils =
 /// Records representing database bindings for `records`.
 /// </summary>
 /// <remarks>
-/// Module generated on 01/10/2024 19:32:18 (utc) via Freql.Tools.
+/// Module generated on 01/10/2024 19:49:57 (utc) via Freql.Tools.
 /// </remarks>
 [<RequireQualifiedAccess>]
 module Records =
@@ -38,7 +38,7 @@ module Records =
     /// A record representing a row in the table `activity_action_outcome_versions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityActionOutcomeVersion =
         { [<JsonPropertyName("id")>] Id: string
@@ -121,7 +121,7 @@ module Records =
     /// A record representing a row in the table `activity_action_outcomes`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityActionOutcome =
         { [<JsonPropertyName("id")>] Id: string
@@ -182,7 +182,7 @@ module Records =
     /// A record representing a row in the table `activity_action_version_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityActionVersionMetadataItem =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -235,7 +235,7 @@ module Records =
     /// A record representing a row in the table `activity_action_version_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityActionTag =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -284,7 +284,7 @@ module Records =
     /// A record representing a row in the table `activity_action_versions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityActionVersion =
         { [<JsonPropertyName("id")>] Id: string
@@ -373,7 +373,7 @@ module Records =
     /// A record representing a row in the table `activity_actions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityAction =
         { [<JsonPropertyName("id")>] Id: string
@@ -434,7 +434,7 @@ module Records =
     /// A record representing a row in the table `activity_hasher_version`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityHasherVersion =
         { [<JsonPropertyName("id")>] Id: string
@@ -509,7 +509,7 @@ module Records =
     /// A record representing a row in the table `activity_hashers`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityHasher =
         { [<JsonPropertyName("id")>] Id: string
@@ -570,7 +570,7 @@ module Records =
     /// A record representing a row in the table `activity_watch_version_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityWatchVersionMetadata =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -623,7 +623,7 @@ module Records =
     /// A record representing a row in the table `activity_watcher_version_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ActivityWatcherVersionTags =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -672,9 +672,9 @@ module Records =
     /// A record representing a row in the table `activity_watcher_versions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type ActivityWatcherVersions =
+    type ActivityWatcherVersion =
         { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("watcherId")>] WatcherId: string
           [<JsonPropertyName("version")>] Version: int64
@@ -734,22 +734,22 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ ActivityWatcherVersions.CreateTableSql()
+            [ ActivityWatcherVersion.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  ActivityWatcherVersions.CreateIndexesSql()
+                  ActivityWatcherVersion.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  ActivityWatcherVersions.CreateTriggersSql()
+                  ActivityWatcherVersion.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `activity_watchers`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type ActivityWatchers =
+    type ActivityWatcher =
         { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
@@ -795,20 +795,20 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ ActivityWatchers.CreateTableSql()
+            [ ActivityWatcher.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  ActivityWatchers.CreateIndexesSql()
+                  ActivityWatcher.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  ActivityWatchers.CreateTriggersSql()
+                  ActivityWatcher.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `entities`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type Entity =
         { [<JsonPropertyName("id")>] Id: string
@@ -883,9 +883,9 @@ module Records =
     /// A record representing a row in the table `entity_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type EntityMetadata =
+    type EntityMetadataItem =
         { [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
@@ -923,22 +923,22 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ EntityMetadata.CreateTableSql()
+            [ EntityMetadataItem.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  EntityMetadata.CreateIndexesSql()
+                  EntityMetadataItem.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  EntityMetadata.CreateTriggersSql()
+                  EntityMetadataItem.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `entity_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type EntityTags =
+    type EntityMetadataItem =
         { [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("tag")>] Tag: int64 option }
     
@@ -972,22 +972,22 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ EntityTags.CreateTableSql()
+            [ EntityMetadataItem.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  EntityTags.CreateIndexesSql()
+                  EntityMetadataItem.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  EntityTags.CreateTriggersSql()
+                  EntityMetadataItem.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `project_entity_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type ProjectEntityLinks =
+    type ProjectEntityLink =
         { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("projectId")>] ProjectId: string
           [<JsonPropertyName("entityId")>] EntityId: string
@@ -1041,22 +1041,22 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ ProjectEntityLinks.CreateTableSql()
+            [ ProjectEntityLink.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  ProjectEntityLinks.CreateIndexesSql()
+                  ProjectEntityLink.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  ProjectEntityLinks.CreateTriggersSql()
+                  ProjectEntityLink.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `project_entity_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type ProjectEntityMetadata =
+    type ProjectEntityMetadataItem =
         { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
@@ -1094,22 +1094,124 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ ProjectEntityMetadata.CreateTableSql()
+            [ ProjectEntityMetadataItem.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  ProjectEntityMetadata.CreateIndexesSql()
+                  ProjectEntityMetadataItem.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  ProjectEntityMetadata.CreateTriggersSql()
+                  ProjectEntityMetadataItem.CreateTriggersSql()
+                  |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
+    
+    /// <summary>
+    /// A record representing a row in the table `project_entity_tags`.
+    /// </summary>
+    /// <remarks>
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    type ProjectEntityTag =
+        { [<JsonPropertyName("linkId")>] LinkId: string
+          [<JsonPropertyName("tag")>] Tag: string }
+    
+        static member Blank() =
+            { LinkId = String.Empty
+              Tag = String.Empty }
+    
+        static member CreateTableSql() = """
+        CREATE TABLE project_entity_tags
+(
+    link_id TEXT not null
+        constraint project_entity_tags_project_team_links_id_fk
+            references project_team_links,
+    tag     TEXT not null,
+    constraint project_entity_tags_pk
+        primary key (link_id, tag)
+)
+        """
+    
+        static member SelectSql() = """
+        SELECT
+              project_entity_tags.`link_id`,
+              project_entity_tags.`tag`
+        FROM project_entity_tags
+        """
+    
+        static member TableName() = "project_entity_tags"
+    
+        static member CreateIndexesSql() = []
+    
+        static member CreateTriggersSql() = []
+    
+        static member InitializationSql(checkIfExists: bool) =
+            [ ProjectEntityTag.CreateTableSql()
+              |> Utils.updateCheckIfExists checkIfExists "TABLE"
+              yield!
+                  ProjectEntityTag.CreateIndexesSql()
+                  |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
+              yield!
+                  ProjectEntityTag.CreateTriggersSql()
+                  |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
+    
+    /// <summary>
+    /// A record representing a row in the table `project_metadata`.
+    /// </summary>
+    /// <remarks>
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    type ProjectMetadataItem =
+        { [<JsonPropertyName("projectId")>] ProjectId: string
+          [<JsonPropertyName("itemKey")>] ItemKey: string
+          [<JsonPropertyName("itemValue")>] ItemValue: string option }
+    
+        static member Blank() =
+            { ProjectId = String.Empty
+              ItemKey = String.Empty
+              ItemValue = None }
+    
+        static member CreateTableSql() = """
+        CREATE TABLE project_metadata
+(
+    project_id TEXT not null
+        constraint project_metadata_projects_id_fk
+            references projects,
+    item_key   TEXT not null,
+    item_value TEXT,
+    constraint project_metadata_pk
+        primary key (project_id, item_key)
+)
+        """
+    
+        static member SelectSql() = """
+        SELECT
+              project_metadata.`project_id`,
+              project_metadata.`item_key`,
+              project_metadata.`item_value`
+        FROM project_metadata
+        """
+    
+        static member TableName() = "project_metadata"
+    
+        static member CreateIndexesSql() = []
+    
+        static member CreateTriggersSql() = []
+    
+        static member InitializationSql(checkIfExists: bool) =
+            [ ProjectMetadataItem.CreateTableSql()
+              |> Utils.updateCheckIfExists checkIfExists "TABLE"
+              yield!
+                  ProjectMetadataItem.CreateIndexesSql()
+                  |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
+              yield!
+                  ProjectMetadataItem.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `project_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type ProjectTags =
+    type ProjectTag =
         { [<JsonPropertyName("projectId")>] ProjectId: string
           [<JsonPropertyName("tag")>] Tag: string }
     
@@ -1143,20 +1245,20 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ ProjectTags.CreateTableSql()
+            [ ProjectTag.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  ProjectTags.CreateIndexesSql()
+                  ProjectTag.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  ProjectTags.CreateTriggersSql()
+                  ProjectTag.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `project_team_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ProjectTeamClaim =
         { [<JsonPropertyName("linkId")>] LinkId: string
@@ -1205,7 +1307,7 @@ module Records =
     /// A record representing a row in the table `project_team_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type ProjectTeamLink =
         { [<JsonPropertyName("id")>] Id: string
@@ -1283,9 +1385,9 @@ module Records =
     /// A record representing a row in the table `project_team_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type ProjectTeamMetadata =
+    type ProjectTeamMetadataItem =
         { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
@@ -1323,20 +1425,20 @@ module Records =
         static member CreateTriggersSql() = []
     
         static member InitializationSql(checkIfExists: bool) =
-            [ ProjectTeamMetadata.CreateTableSql()
+            [ ProjectTeamMetadataItem.CreateTableSql()
               |> Utils.updateCheckIfExists checkIfExists "TABLE"
               yield!
-                  ProjectTeamMetadata.CreateIndexesSql()
+                  ProjectTeamMetadataItem.CreateIndexesSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "INDEX")
               yield!
-                  ProjectTeamMetadata.CreateTriggersSql()
+                  ProjectTeamMetadataItem.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
     /// <summary>
     /// A record representing a row in the table `projects`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type Project =
         { [<JsonPropertyName("id")>] Id: string
@@ -1401,7 +1503,7 @@ module Records =
     /// A record representing a row in the table `team_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type TeamUserClaim =
         { [<JsonPropertyName("linkId")>] LinkId: string
@@ -1450,7 +1552,7 @@ module Records =
     /// A record representing a row in the table `team_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type TeamUser =
         { [<JsonPropertyName("id")>] Id: string
@@ -1519,7 +1621,7 @@ module Records =
     /// A record representing a row in the table `teams`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type Team =
         { [<JsonPropertyName("id")>] Id: string
@@ -1572,7 +1674,7 @@ module Records =
     /// A record representing a row in the table `tenant_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type TenantUserClaim =
         { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
@@ -1621,7 +1723,7 @@ module Records =
     /// A record representing a row in the table `tenant_user_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type TenantUserMetadataItem =
         { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
@@ -1674,7 +1776,7 @@ module Records =
     /// A record representing a row in the table `tenant_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type TenantUser =
         { [<JsonPropertyName("id")>] Id: string
@@ -1743,7 +1845,7 @@ module Records =
     /// A record representing a row in the table `tenants`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type Tenant =
         { [<JsonPropertyName("id")>] Id: string
@@ -1794,7 +1896,7 @@ module Records =
     /// A record representing a row in the table `users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type User =
         { [<JsonPropertyName("id")>] Id: string
@@ -1853,14 +1955,14 @@ module Records =
                   User.CreateTriggersSql()
                   |> List.map (Utils.updateCheckIfExists checkIfExists "TRIGGER")  ]
     
-/// Module generated on 01/10/2024 19:32:18 (utc) via Freql.Tools.
+/// Module generated on 01/10/2024 19:49:57 (utc) via Freql.Tools.
 [<RequireQualifiedAccess>]
 module Parameters =
     /// <summary>
     /// A record representing a new row in the table `activity_action_outcome_versions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityActionOutcomeVersion =
         { [<JsonPropertyName("id")>] Id: string
@@ -1890,7 +1992,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_action_outcomes`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityActionOutcome =
         { [<JsonPropertyName("id")>] Id: string
@@ -1910,7 +2012,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_action_version_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityActionVersionMetadataItem =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -1926,7 +2028,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_action_version_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityActionTag =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -1940,7 +2042,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_action_versions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityActionVersion =
         { [<JsonPropertyName("id")>] Id: string
@@ -1972,7 +2074,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_actions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityAction =
         { [<JsonPropertyName("id")>] Id: string
@@ -1992,7 +2094,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_hasher_version`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityHasherVersion =
         { [<JsonPropertyName("id")>] Id: string
@@ -2018,7 +2120,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_hashers`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityHasher =
         { [<JsonPropertyName("id")>] Id: string
@@ -2038,7 +2140,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_watch_version_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityWatchVersionMetadata =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -2054,7 +2156,7 @@ module Parameters =
     /// A record representing a new row in the table `activity_watcher_version_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewActivityWatcherVersionTags =
         { [<JsonPropertyName("versionId")>] VersionId: string
@@ -2068,9 +2170,9 @@ module Parameters =
     /// A record representing a new row in the table `activity_watcher_versions`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewActivityWatcherVersions =
+    type NewActivityWatcherVersion =
         { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("watcherId")>] WatcherId: string
           [<JsonPropertyName("version")>] Version: int64
@@ -2094,9 +2196,9 @@ module Parameters =
     /// A record representing a new row in the table `activity_watchers`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewActivityWatchers =
+    type NewActivityWatcher =
         { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("createdOn")>] CreatedOn: DateTime
@@ -2114,7 +2216,7 @@ module Parameters =
     /// A record representing a new row in the table `entities`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewEntity =
         { [<JsonPropertyName("id")>] Id: string
@@ -2138,9 +2240,9 @@ module Parameters =
     /// A record representing a new row in the table `entity_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewEntityMetadata =
+    type NewEntityMetadataItem =
         { [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
@@ -2154,9 +2256,9 @@ module Parameters =
     /// A record representing a new row in the table `entity_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewEntityTags =
+    type NewEntityMetadataItem =
         { [<JsonPropertyName("entityId")>] EntityId: string
           [<JsonPropertyName("tag")>] Tag: int64 option }
     
@@ -2168,9 +2270,9 @@ module Parameters =
     /// A record representing a new row in the table `project_entity_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewProjectEntityLinks =
+    type NewProjectEntityLink =
         { [<JsonPropertyName("id")>] Id: string
           [<JsonPropertyName("projectId")>] ProjectId: string
           [<JsonPropertyName("entityId")>] EntityId: string
@@ -2190,9 +2292,9 @@ module Parameters =
     /// A record representing a new row in the table `project_entity_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewProjectEntityMetadata =
+    type NewProjectEntityMetadataItem =
         { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
@@ -2203,12 +2305,42 @@ module Parameters =
               ItemValue = String.Empty }
     
     /// <summary>
+    /// A record representing a new row in the table `project_entity_tags`.
+    /// </summary>
+    /// <remarks>
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    type NewProjectEntityTag =
+        { [<JsonPropertyName("linkId")>] LinkId: string
+          [<JsonPropertyName("tag")>] Tag: string }
+    
+        static member Blank() =
+            { LinkId = String.Empty
+              Tag = String.Empty }
+    
+    /// <summary>
+    /// A record representing a new row in the table `project_metadata`.
+    /// </summary>
+    /// <remarks>
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    type NewProjectMetadataItem =
+        { [<JsonPropertyName("projectId")>] ProjectId: string
+          [<JsonPropertyName("itemKey")>] ItemKey: string
+          [<JsonPropertyName("itemValue")>] ItemValue: string option }
+    
+        static member Blank() =
+            { ProjectId = String.Empty
+              ItemKey = String.Empty
+              ItemValue = None }
+    
+    /// <summary>
     /// A record representing a new row in the table `project_tags`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewProjectTags =
+    type NewProjectTag =
         { [<JsonPropertyName("projectId")>] ProjectId: string
           [<JsonPropertyName("tag")>] Tag: string }
     
@@ -2220,7 +2352,7 @@ module Parameters =
     /// A record representing a new row in the table `project_team_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewProjectTeamClaim =
         { [<JsonPropertyName("linkId")>] LinkId: string
@@ -2234,7 +2366,7 @@ module Parameters =
     /// A record representing a new row in the table `project_team_links`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewProjectTeamLink =
         { [<JsonPropertyName("id")>] Id: string
@@ -2256,9 +2388,9 @@ module Parameters =
     /// A record representing a new row in the table `project_team_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
-    type NewProjectTeamMetadata =
+    type NewProjectTeamMetadataItem =
         { [<JsonPropertyName("linkId")>] LinkId: string
           [<JsonPropertyName("itemKey")>] ItemKey: string
           [<JsonPropertyName("itemValue")>] ItemValue: string }
@@ -2272,7 +2404,7 @@ module Parameters =
     /// A record representing a new row in the table `projects`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewProject =
         { [<JsonPropertyName("id")>] Id: string
@@ -2294,7 +2426,7 @@ module Parameters =
     /// A record representing a new row in the table `team_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTeamUserClaim =
         { [<JsonPropertyName("linkId")>] LinkId: string
@@ -2308,7 +2440,7 @@ module Parameters =
     /// A record representing a new row in the table `team_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTeamUser =
         { [<JsonPropertyName("id")>] Id: string
@@ -2330,7 +2462,7 @@ module Parameters =
     /// A record representing a new row in the table `teams`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTeam =
         { [<JsonPropertyName("id")>] Id: string
@@ -2346,7 +2478,7 @@ module Parameters =
     /// A record representing a new row in the table `tenant_user_claims`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTenantUserClaim =
         { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
@@ -2360,7 +2492,7 @@ module Parameters =
     /// A record representing a new row in the table `tenant_user_metadata`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTenantUserMetadataItem =
         { [<JsonPropertyName("tenantUserId")>] TenantUserId: string
@@ -2376,7 +2508,7 @@ module Parameters =
     /// A record representing a new row in the table `tenant_users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTenantUser =
         { [<JsonPropertyName("id")>] Id: string
@@ -2398,7 +2530,7 @@ module Parameters =
     /// A record representing a new row in the table `tenants`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewTenant =
         { [<JsonPropertyName("id")>] Id: string
@@ -2414,7 +2546,7 @@ module Parameters =
     /// A record representing a new row in the table `users`.
     /// </summary>
     /// <remarks>
-    /// This record was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This record was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     type NewUser =
         { [<JsonPropertyName("id")>] Id: string
@@ -2432,7 +2564,7 @@ module Parameters =
               SystemUser = 0L
               Active = true }
     
-/// Module generated on 01/10/2024 19:32:18 (utc) via Freql.Tools.
+/// Module generated on 01/10/2024 19:49:57 (utc) via Freql.Tools.
 [<RequireQualifiedAccess>]
 module Operations =
 
@@ -2447,7 +2579,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2466,7 +2598,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2489,7 +2621,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2508,7 +2640,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2531,7 +2663,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2550,7 +2682,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2573,7 +2705,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2592,7 +2724,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2615,7 +2747,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2634,7 +2766,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2657,7 +2789,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2676,7 +2808,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2699,7 +2831,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2718,7 +2850,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2741,7 +2873,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2760,7 +2892,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2783,7 +2915,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2802,7 +2934,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2825,7 +2957,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2844,7 +2976,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2859,87 +2991,87 @@ module Operations =
         context.Insert("activity_watcher_version_tags", parameters)
     
     /// <summary>
-    /// Select a `Records.ActivityWatcherVersions` from the table `activity_watcher_versions`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.ActivityWatcherVersions&gt;` and uses Records.ActivityWatcherVersions.SelectSql().
+    /// Select a `Records.ActivityWatcherVersion` from the table `activity_watcher_versions`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ActivityWatcherVersion&gt;` and uses Records.ActivityWatcherVersion.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectActivityWatcherVersionsRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectActivityWatcherVersionRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectActivityWatcherVersionsRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ActivityWatcherVersions.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.ActivityWatcherVersions>(sql, parameters)
+    let selectActivityWatcherVersionRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ActivityWatcherVersion.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ActivityWatcherVersion>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.ActivityWatcherVersions&gt;` and uses Records.ActivityWatcherVersions.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.ActivityWatcherVersion&gt;` and uses Records.ActivityWatcherVersion.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectActivityWatcherVersionsRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectActivityWatcherVersionRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectActivityWatcherVersionsRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ActivityWatcherVersions.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.ActivityWatcherVersions>(sql, parameters)
+    let selectActivityWatcherVersionRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ActivityWatcherVersion.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ActivityWatcherVersion>(sql, parameters)
     
-    let insertActivityWatcherVersions (context: SqliteContext) (parameters: Parameters.NewActivityWatcherVersions) =
+    let insertActivityWatcherVersion (context: SqliteContext) (parameters: Parameters.NewActivityWatcherVersion) =
         context.Insert("activity_watcher_versions", parameters)
     
     /// <summary>
-    /// Select a `Records.ActivityWatchers` from the table `activity_watchers`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.ActivityWatchers&gt;` and uses Records.ActivityWatchers.SelectSql().
+    /// Select a `Records.ActivityWatcher` from the table `activity_watchers`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ActivityWatcher&gt;` and uses Records.ActivityWatcher.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectActivityWatchersRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectActivityWatcherRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectActivityWatchersRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ActivityWatchers.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.ActivityWatchers>(sql, parameters)
+    let selectActivityWatcherRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ActivityWatcher.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ActivityWatcher>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.ActivityWatchers&gt;` and uses Records.ActivityWatchers.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.ActivityWatcher&gt;` and uses Records.ActivityWatcher.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectActivityWatchersRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectActivityWatcherRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectActivityWatchersRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ActivityWatchers.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.ActivityWatchers>(sql, parameters)
+    let selectActivityWatcherRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ActivityWatcher.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ActivityWatcher>(sql, parameters)
     
-    let insertActivityWatchers (context: SqliteContext) (parameters: Parameters.NewActivityWatchers) =
+    let insertActivityWatcher (context: SqliteContext) (parameters: Parameters.NewActivityWatcher) =
         context.Insert("activity_watchers", parameters)
     
     /// <summary>
@@ -2951,7 +3083,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2970,7 +3102,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -2985,213 +3117,297 @@ module Operations =
         context.Insert("entities", parameters)
     
     /// <summary>
-    /// Select a `Records.EntityMetadata` from the table `entity_metadata`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.EntityMetadata&gt;` and uses Records.EntityMetadata.SelectSql().
+    /// Select a `Records.EntityMetadataItem` from the table `entity_metadata`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.EntityMetadataItem&gt;` and uses Records.EntityMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectEntityMetadataRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectEntityMetadataItemRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectEntityMetadataRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.EntityMetadata.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.EntityMetadata>(sql, parameters)
+    let selectEntityMetadataItemRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.EntityMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.EntityMetadataItem>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.EntityMetadata&gt;` and uses Records.EntityMetadata.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.EntityMetadataItem&gt;` and uses Records.EntityMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectEntityMetadataRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectEntityMetadataItemRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectEntityMetadataRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.EntityMetadata.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.EntityMetadata>(sql, parameters)
+    let selectEntityMetadataItemRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.EntityMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.EntityMetadataItem>(sql, parameters)
     
-    let insertEntityMetadata (context: SqliteContext) (parameters: Parameters.NewEntityMetadata) =
+    let insertEntityMetadataItem (context: SqliteContext) (parameters: Parameters.NewEntityMetadataItem) =
         context.Insert("entity_metadata", parameters)
     
     /// <summary>
-    /// Select a `Records.EntityTags` from the table `entity_tags`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.EntityTags&gt;` and uses Records.EntityTags.SelectSql().
+    /// Select a `Records.EntityMetadataItem` from the table `entity_tags`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.EntityMetadataItem&gt;` and uses Records.EntityMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectEntityTagsRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectEntityMetadataItemRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectEntityTagsRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.EntityTags.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.EntityTags>(sql, parameters)
+    let selectEntityMetadataItemRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.EntityMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.EntityMetadataItem>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.EntityTags&gt;` and uses Records.EntityTags.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.EntityMetadataItem&gt;` and uses Records.EntityMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectEntityTagsRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectEntityMetadataItemRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectEntityTagsRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.EntityTags.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.EntityTags>(sql, parameters)
+    let selectEntityMetadataItemRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.EntityMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.EntityMetadataItem>(sql, parameters)
     
-    let insertEntityTags (context: SqliteContext) (parameters: Parameters.NewEntityTags) =
+    let insertEntityMetadataItem (context: SqliteContext) (parameters: Parameters.NewEntityMetadataItem) =
         context.Insert("entity_tags", parameters)
     
     /// <summary>
-    /// Select a `Records.ProjectEntityLinks` from the table `project_entity_links`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectEntityLinks&gt;` and uses Records.ProjectEntityLinks.SelectSql().
+    /// Select a `Records.ProjectEntityLink` from the table `project_entity_links`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectEntityLink&gt;` and uses Records.ProjectEntityLink.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectEntityLinksRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectEntityLinkRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectEntityLinksRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectEntityLinks.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.ProjectEntityLinks>(sql, parameters)
+    let selectProjectEntityLinkRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectEntityLink.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ProjectEntityLink>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.ProjectEntityLinks&gt;` and uses Records.ProjectEntityLinks.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.ProjectEntityLink&gt;` and uses Records.ProjectEntityLink.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectEntityLinksRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectEntityLinkRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectEntityLinksRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectEntityLinks.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.ProjectEntityLinks>(sql, parameters)
+    let selectProjectEntityLinkRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectEntityLink.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ProjectEntityLink>(sql, parameters)
     
-    let insertProjectEntityLinks (context: SqliteContext) (parameters: Parameters.NewProjectEntityLinks) =
+    let insertProjectEntityLink (context: SqliteContext) (parameters: Parameters.NewProjectEntityLink) =
         context.Insert("project_entity_links", parameters)
     
     /// <summary>
-    /// Select a `Records.ProjectEntityMetadata` from the table `project_entity_metadata`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectEntityMetadata&gt;` and uses Records.ProjectEntityMetadata.SelectSql().
+    /// Select a `Records.ProjectEntityMetadataItem` from the table `project_entity_metadata`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectEntityMetadataItem&gt;` and uses Records.ProjectEntityMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectEntityMetadataRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectEntityMetadataItemRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectEntityMetadataRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectEntityMetadata.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.ProjectEntityMetadata>(sql, parameters)
+    let selectProjectEntityMetadataItemRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectEntityMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ProjectEntityMetadataItem>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.ProjectEntityMetadata&gt;` and uses Records.ProjectEntityMetadata.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.ProjectEntityMetadataItem&gt;` and uses Records.ProjectEntityMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectEntityMetadataRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectEntityMetadataItemRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectEntityMetadataRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectEntityMetadata.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.ProjectEntityMetadata>(sql, parameters)
+    let selectProjectEntityMetadataItemRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectEntityMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ProjectEntityMetadataItem>(sql, parameters)
     
-    let insertProjectEntityMetadata (context: SqliteContext) (parameters: Parameters.NewProjectEntityMetadata) =
+    let insertProjectEntityMetadataItem (context: SqliteContext) (parameters: Parameters.NewProjectEntityMetadataItem) =
         context.Insert("project_entity_metadata", parameters)
     
     /// <summary>
-    /// Select a `Records.ProjectTags` from the table `project_tags`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectTags&gt;` and uses Records.ProjectTags.SelectSql().
+    /// Select a `Records.ProjectEntityTag` from the table `project_entity_tags`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectEntityTag&gt;` and uses Records.ProjectEntityTag.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectTagsRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectEntityTagRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectTagsRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectTags.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.ProjectTags>(sql, parameters)
+    let selectProjectEntityTagRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectEntityTag.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ProjectEntityTag>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.ProjectTags&gt;` and uses Records.ProjectTags.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.ProjectEntityTag&gt;` and uses Records.ProjectEntityTag.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectTagsRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectEntityTagRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectTagsRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectTags.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.ProjectTags>(sql, parameters)
+    let selectProjectEntityTagRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectEntityTag.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ProjectEntityTag>(sql, parameters)
     
-    let insertProjectTags (context: SqliteContext) (parameters: Parameters.NewProjectTags) =
+    let insertProjectEntityTag (context: SqliteContext) (parameters: Parameters.NewProjectEntityTag) =
+        context.Insert("project_entity_tags", parameters)
+    
+    /// <summary>
+    /// Select a `Records.ProjectMetadataItem` from the table `project_metadata`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectMetadataItem&gt;` and uses Records.ProjectMetadataItem.SelectSql().
+    /// The caller can provide extra string lines to create a query and boxed parameters.
+    /// It is up to the caller to verify the sql and parameters are correct,
+    /// this should be considered an internal function (not exposed in public APIs).
+    /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
+    /// </summary>
+    /// <remarks>
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// let result = selectProjectMetadataItemRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// </code>
+    /// </example>
+    let selectProjectMetadataItemRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ProjectMetadataItem>(sql, parameters)
+    
+    /// <summary>
+    /// Internally this calls `context.SelectAnon&lt;Records.ProjectMetadataItem&gt;` and uses Records.ProjectMetadataItem.SelectSql().
+    /// The caller can provide extra string lines to create a query and boxed parameters.
+    /// It is up to the caller to verify the sql and parameters are correct,
+    /// this should be considered an internal function (not exposed in public APIs).
+    /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
+    /// </summary>
+    /// <remarks>
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// let result = selectProjectMetadataItemRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// </code>
+    /// </example>
+    let selectProjectMetadataItemRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ProjectMetadataItem>(sql, parameters)
+    
+    let insertProjectMetadataItem (context: SqliteContext) (parameters: Parameters.NewProjectMetadataItem) =
+        context.Insert("project_metadata", parameters)
+    
+    /// <summary>
+    /// Select a `Records.ProjectTag` from the table `project_tags`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectTag&gt;` and uses Records.ProjectTag.SelectSql().
+    /// The caller can provide extra string lines to create a query and boxed parameters.
+    /// It is up to the caller to verify the sql and parameters are correct,
+    /// this should be considered an internal function (not exposed in public APIs).
+    /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
+    /// </summary>
+    /// <remarks>
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// let result = selectProjectTagRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// </code>
+    /// </example>
+    let selectProjectTagRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectTag.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ProjectTag>(sql, parameters)
+    
+    /// <summary>
+    /// Internally this calls `context.SelectAnon&lt;Records.ProjectTag&gt;` and uses Records.ProjectTag.SelectSql().
+    /// The caller can provide extra string lines to create a query and boxed parameters.
+    /// It is up to the caller to verify the sql and parameters are correct,
+    /// this should be considered an internal function (not exposed in public APIs).
+    /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
+    /// </summary>
+    /// <remarks>
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// let result = selectProjectTagRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// </code>
+    /// </example>
+    let selectProjectTagRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectTag.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ProjectTag>(sql, parameters)
+    
+    let insertProjectTag (context: SqliteContext) (parameters: Parameters.NewProjectTag) =
         context.Insert("project_tags", parameters)
     
     /// <summary>
@@ -3203,7 +3419,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3222,7 +3438,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3245,7 +3461,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3264,7 +3480,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3279,45 +3495,45 @@ module Operations =
         context.Insert("project_team_links", parameters)
     
     /// <summary>
-    /// Select a `Records.ProjectTeamMetadata` from the table `project_team_metadata`.
-    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectTeamMetadata&gt;` and uses Records.ProjectTeamMetadata.SelectSql().
+    /// Select a `Records.ProjectTeamMetadataItem` from the table `project_team_metadata`.
+    /// Internally this calls `context.SelectSingleAnon&lt;Records.ProjectTeamMetadataItem&gt;` and uses Records.ProjectTeamMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectTeamMetadataRecord ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectTeamMetadataItemRecord ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectTeamMetadataRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectTeamMetadata.SelectSql() ] @ query |> buildSql
-        context.SelectSingleAnon<Records.ProjectTeamMetadata>(sql, parameters)
+    let selectProjectTeamMetadataItemRecord (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectTeamMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectSingleAnon<Records.ProjectTeamMetadataItem>(sql, parameters)
     
     /// <summary>
-    /// Internally this calls `context.SelectAnon&lt;Records.ProjectTeamMetadata&gt;` and uses Records.ProjectTeamMetadata.SelectSql().
+    /// Internally this calls `context.SelectAnon&lt;Records.ProjectTeamMetadataItem&gt;` and uses Records.ProjectTeamMetadataItem.SelectSql().
     /// The caller can provide extra string lines to create a query and boxed parameters.
     /// It is up to the caller to verify the sql and parameters are correct,
     /// this should be considered an internal function (not exposed in public APIs).
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
-    /// let result = selectProjectTeamMetadataRecords ctx "WHERE `field` = @0" [ box `value` ]
+    /// let result = selectProjectTeamMetadataItemRecords ctx "WHERE `field` = @0" [ box `value` ]
     /// </code>
     /// </example>
-    let selectProjectTeamMetadataRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
-        let sql = [ Records.ProjectTeamMetadata.SelectSql() ] @ query |> buildSql
-        context.SelectAnon<Records.ProjectTeamMetadata>(sql, parameters)
+    let selectProjectTeamMetadataItemRecords (context: SqliteContext) (query: string list) (parameters: obj list) =
+        let sql = [ Records.ProjectTeamMetadataItem.SelectSql() ] @ query |> buildSql
+        context.SelectAnon<Records.ProjectTeamMetadataItem>(sql, parameters)
     
-    let insertProjectTeamMetadata (context: SqliteContext) (parameters: Parameters.NewProjectTeamMetadata) =
+    let insertProjectTeamMetadataItem (context: SqliteContext) (parameters: Parameters.NewProjectTeamMetadataItem) =
         context.Insert("project_team_metadata", parameters)
     
     /// <summary>
@@ -3329,7 +3545,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3348,7 +3564,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3371,7 +3587,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3390,7 +3606,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3413,7 +3629,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3432,7 +3648,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3455,7 +3671,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3474,7 +3690,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3497,7 +3713,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3516,7 +3732,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3539,7 +3755,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3558,7 +3774,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3581,7 +3797,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3600,7 +3816,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3623,7 +3839,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3642,7 +3858,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3665,7 +3881,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3684,7 +3900,7 @@ module Operations =
     /// Parameters are assigned names based on their order in 0 indexed array. For example: @0,@1,@2...
     /// </summary>
     /// <remarks>
-    /// This function was generated via Freql.Tools on 01/10/2024 19:32:18
+    /// This function was generated via Freql.Tools on 01/10/2024 19:49:57
     /// </remarks>
     /// <example>
     /// <code>
@@ -3703,8 +3919,8 @@ module Initialization =
     let sql (checkIfExists: bool) =
         [ Records.Tenant.InitializationSql checkIfExists
           Records.Entity.InitializationSql checkIfExists
-          Records.ActivityWatchers.InitializationSql checkIfExists
-          Records.ActivityWatcherVersions.InitializationSql checkIfExists
+          Records.ActivityWatcher.InitializationSql checkIfExists
+          Records.ActivityWatcherVersion.InitializationSql checkIfExists
           Records.ActivityHasher.InitializationSql checkIfExists
           Records.ActivityAction.InitializationSql checkIfExists
           Records.ActivityHasherVersion.InitializationSql checkIfExists
@@ -3714,18 +3930,20 @@ module Initialization =
           Records.ActivityActionVersion.InitializationSql checkIfExists
           Records.TenantUser.InitializationSql checkIfExists
           Records.ProjectTeamLink.InitializationSql checkIfExists
-          Records.ProjectEntityLinks.InitializationSql checkIfExists
+          Records.ProjectEntityLink.InitializationSql checkIfExists
           Records.ActivityActionOutcome.InitializationSql checkIfExists
           Records.TenantUserMetadataItem.InitializationSql checkIfExists
           Records.TenantUserClaim.InitializationSql checkIfExists
           Records.TeamUser.InitializationSql checkIfExists
           Records.TeamUserClaim.InitializationSql checkIfExists
-          Records.ProjectTeamMetadata.InitializationSql checkIfExists
+          Records.ProjectTeamMetadataItem.InitializationSql checkIfExists
           Records.ProjectTeamClaim.InitializationSql checkIfExists
-          Records.ProjectTags.InitializationSql checkIfExists
-          Records.ProjectEntityMetadata.InitializationSql checkIfExists
-          Records.EntityTags.InitializationSql checkIfExists
-          Records.EntityMetadata.InitializationSql checkIfExists
+          Records.ProjectTag.InitializationSql checkIfExists
+          Records.ProjectMetadataItem.InitializationSql checkIfExists
+          Records.ProjectEntityTag.InitializationSql checkIfExists
+          Records.ProjectEntityMetadataItem.InitializationSql checkIfExists
+          Records.EntityMetadataItem.InitializationSql checkIfExists
+          Records.EntityMetadataItem.InitializationSql checkIfExists
           Records.ActivityWatcherVersionTags.InitializationSql checkIfExists
           Records.ActivityWatchVersionMetadata.InitializationSql checkIfExists
           Records.ActivityActionTag.InitializationSql checkIfExists
