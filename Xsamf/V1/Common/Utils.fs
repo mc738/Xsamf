@@ -45,11 +45,21 @@ module Utils =
         let bindIfTrue<'T> (fn: unit -> 'T option) (value: bool) = value |> fromBool |> Option.bind fn
 
         let mapIfTrue<'T> (fn: unit -> 'T) (value: bool) = value |> fromBool |> Option.map fn
-        
+
     module ActionResult =
 
         let ifSuccessful<'T, 'U> (fn: unit -> ActionResult<'U>) (result: ActionResult<'T>) =
             match result with
             | ActionResult.Failure failureResult -> result
             | ActionResult.Success foo -> fn () |> ActionResult.bind (fun _ -> result)
-            
+
+    module FetchResult =
+
+        let fromOption<'T> (message: string) (value: 'T option) =
+            match value with
+            | Some v -> FetchResult.Success v
+            | None ->
+                { DisplayMessage = message
+                  Message = message
+                  Exception = None }
+                |> FetchResult.Failure
