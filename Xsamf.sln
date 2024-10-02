@@ -8,6 +8,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Xsamf.UnitTests", "Xsamf.UnitTests\Xsamf.UnitTests.fsproj", "{D04C5C61-E20F-4EFF-8A75-630F5CF698DE}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Xsamf.ExampleApp", "Xsamf.ExampleApp\Xsamf.ExampleApp.fsproj", "{D2BFA4D4-4B3B-4F2E-8295-C0CDC942309F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{1F2E4790-C841-4B43-93B6-88F1D21DE1EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F2E4790-C841-4B43-93B6-88F1D21DE1EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F2E4790-C841-4B43-93B6-88F1D21DE1EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D04C5C61-E20F-4EFF-8A75-630F5CF698DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D04C5C61-E20F-4EFF-8A75-630F5CF698DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D04C5C61-E20F-4EFF-8A75-630F5CF698DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D04C5C61-E20F-4EFF-8A75-630F5CF698DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2BFA4D4-4B3B-4F2E-8295-C0CDC942309F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2BFA4D4-4B3B-4F2E-8295-C0CDC942309F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2BFA4D4-4B3B-4F2E-8295-C0CDC942309F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2BFA4D4-4B3B-4F2E-8295-C0CDC942309F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

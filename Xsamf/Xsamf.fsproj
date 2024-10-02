@@ -7,25 +7,65 @@
 
     <ItemGroup>
         <Compile Include="V1\Common\Utils.fs" />
-        <Folder Include="V1\Common\Domain\" />
+        <Compile Include="V1\Common\Cron.fs" />
+        <Compile Include="V1\Domain\Core\Tenants.fs" />
+        <Compile Include="V1\Domain\Core\Entities.fs" />
+        <Compile Include="V1\Domain\Core\Teams.fs" />
+        <Compile Include="V1\Domain\Core\Projects.fs" />
+        <Compile Include="V1\Domain\Core\Users.fs" />
+        <Compile Include="V1\Domain\Monitoring\Common.fs" />
+        <Compile Include="V1\Domain\Monitoring\Dms.fs" />
+        <Compile Include="V1\Domain\Monitoring\Activities.fs" />
+        <Compile Include="V1\Domain\Monitoring\Probes.fs" />
+        <Compile Include="V1\Domain\Monitoring\Events.fs" />
+        <Compile Include="V1\Domain\JsonConverters.fs" />
+        <Compile Include="V1\Monitoring\Rules\Domain.fs" />
+        <Folder Include="V1\Monitoring\Dms\" />
+        <Compile Include="V1\Monitoring\Activities\Domain.fs" />
+        <Compile Include="V1\Monitoring\Probes\Domain.fs" />
+        <Folder Include="V1\Monitoring\Incidents\" />
         <Compile Include="V1\Store\Shared\Domain\Common.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Tags.fs" />
         <Compile Include="V1\Store\Shared\Domain\Tenants.fs" />
         <Compile Include="V1\Store\Shared\Domain\Entities.fs" />
         <Compile Include="V1\Store\Shared\Domain\Watchers.fs" />
         <Compile Include="V1\Store\Shared\Domain\Dms.fs" />
-        <Compile Include="V1\Store\Shared\Domain\Events.fs" />
+        <Compile Include="V1\Store\Shared\Domain\Activities.fs" />
         <Compile Include="V1\Store\Shared\Domain\Incidents.fs" />
+        <Compile Include="V1\Store\Shared\IXsamfStoreReader.fs" />
+        <Compile Include="V1\Store\Shared\IXsamfStoreWriter.fs" />
         <Compile Include="V1\Store\Shared\IXsamfStore.fs" />
-        <Folder Include="V1\Store\SQLite\" />
+        <Compile Include="V1\Store\SQLite\Persistence.fs" />
+        <Compile Include="V1\Store\SQLite\Activities.fs" />
+        <Compile Include="V1\Store\SQLite\SQLiteXsamfStore.fs" />
         <Folder Include="V1\Store\MySql\" />
         <Folder Include="V1\Store\PostgreSQL\" />
-        <Folder Include="V1\Monitoring\Dms\" />
-        <Folder Include="V1\Monitoring\Events\" />
-        <Folder Include="V1\Monitoring\Incidents\" />
+        <Compile Include="V1\Operations\Common\Shared.fs" />
+        <Compile Include="V1\Operations\Common\Fetch.fs" />
+        <Compile Include="V1\Operations\Common\Verification.fs" />
+        <Compile Include="V1\Operations\Monitoring\Dms\Common.fs" />
+        <Compile Include="V1\Operations\Monitoring\Dms\CreateOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Dms\ReadOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Dms\UpdateOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Activities\Common.fs" />
+        <Compile Include="V1\Operations\Monitoring\Activities\CreateOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Activities\ReadOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Activities\UpdateOperations.fs" />
+        <Folder Include="V1\Operations\Monitoring\Probes\" />
+        <Compile Include="V1\Operations\Monitoring\Incidents\Common.fs" />
+        <Compile Include="V1\Operations\Monitoring\Incidents\CreateOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Incidents\ReadOperations.fs" />
+        <Compile Include="V1\Operations\Monitoring\Incidents\UpdateOperations.fs" />
+        <Compile Include="V1\Services\Monitoring\Dms.fs" />
+        <Compile Include="V1\Services\Monitoring\Activities.fs" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Freql.Csv" Version="0.13.0" />
+      <PackageReference Include="freql.mysql" Version="0.13.0" />
+      <PackageReference Include="Freql.Sqlite" Version="0.13.0" />
       <PackageReference Include="FsToolbox" Version="0.9.3" />
+      <PackageReference Include="Quartz" Version="3.13.0" />
     </ItemGroup>
 
 </Project>
