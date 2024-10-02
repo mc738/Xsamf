@@ -33,3 +33,8 @@ module Common =
             match tt with
             | Generated -> DateTime.UtcNow
             | Specific dt -> dt
+
+    [<RequireQualifiedAccess>]
+    type ItemVersion =
+        | Latest
+        | Specific of Version: int
