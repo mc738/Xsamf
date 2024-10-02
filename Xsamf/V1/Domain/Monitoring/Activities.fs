@@ -167,6 +167,9 @@ module Activities =
                 | _ -> Error $"Unknown rule type: `{t}`"
             | None -> Error "Missing `type` property"
 
+        static member Deserialize(str: string) =
+            ()
+        
         member ar.Test(activity: Activity, bespokeHandlers: Map<string, Activity -> bool>) =
             match ar with
             | IsCategory category -> activity.Category = category

@@ -1,24 +1,42 @@
 module Xsamf.V1.Store.SQLite
 
-open Freql.Sqlite
+open Xsamf.V1.Domain.Monitoring.Activities
 
 [<RequireQualifiedAccess>]
 module Activities =
 
+    open Freql.Sqlite
     open FsToolbox.Core.Results
+    open Xsamf.V1.Common.Utils
     open Xsamf.V1.Domain.Monitoring.Activities
     open Xsamf.V1.Store.Shared.Domain.Common
     open Xsamf.V1.Store.SQLite.Persistence
-    
-    
-    
-    
-    let getWatcher (ctx: SqliteContext) (reference: string)  (version: ItemVersion) =
+
+    let getActionVersion (ctx: SqliteContext) (action: Records.ActivityAction) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
-            | ItemVersion.Latest -> [ "WHERE watcher_id = @0 ORDER BY version DESC LIMIT 1" ], [ box reference ]
+            | ItemVersion.Latest -> [ "WHERE action_id = @0 ORDER BY version DESC LIMIT 1" ], [ box action.Id ]
             | ItemVersion.Specific version ->
-                [ "WHERE watcher_id = @0 AND version = @1" ], [ box reference; box version ]
+                [ "WHERE action_id = @0 AND version = @1" ], [ box action.Id; box version ]
+
+        Operations.selectActivityActionVersionRecord ctx conditions parameters
+        |> Option.map (fun av ->
+            ({ Reference = av.Id
+               Name = failwith "todo"
+               Rule = ActivityRule
+               Outcomes = failwith "todo"
+               Hasher = failwith "todo"
+               AdditionMetadata = failwith "todo"
+               AdditionTags = failwith "todo" }
+            : ActivityAction))
+        |> FetchResult.fromOption "Failed to find action version"
+
+    let getWatcherVersion (ctx: SqliteContext) (watcher: Records.ActivityWatcher) (version: ItemVersion) =
+        let (conditions, parameters) =
+            match version with
+            | ItemVersion.Latest -> [ "WHERE watcher_id = @0 ORDER BY version DESC LIMIT 1" ], [ box watcher.Id ]
+            | ItemVersion.Specific version ->
+                [ "WHERE watcher_id = @0 AND version = @1" ], [ box watcher.Id; box version ]
 
         Operations.selectActivityWatcherRecord ctx [ "WHERE id = @0" ] [ id ]
         |> Option.bind (fun aw ->
@@ -31,20 +49,18 @@ module Activities =
                EntityReference = aw.EntityId
                Actions = failwith "todo"
                AdditionMetadata =
-                 Operations.selectActivityWatcherVersionMetadataItemRecords
-                     ctx
-                     [ "WHERE version_id = @0" ]
-                     [ awv.Id ]
+                 Operations.selectActivityWatcherVersionMetadataItemRecords ctx [ "WHERE version_id = @0" ] [ awv.Id ]
                  |> List.map (fun amd -> amd.ItemKey, amd.ItemValue)
                  |> Map.ofList
                AdditionTags =
                  Operations.selectActivityWatcherVersionTagsRecords ctx [ "WHERE version_id = @0" ] [ awv.Id ]
                  |> List.map (fun at -> at.Tag) }
-            : ActivityWatcher)
-            |> FetchResult.Success)
-        |> Option.defaultWith (fun _ ->
-            { Message = ""
-              DisplayMessage = ""
-              Exception = None }
-            |> FetchResult.Failure)
+            : ActivityWatcher))
+        |> FetchResult.fromOption "Failed to get watcher version"
 
+
+    let getWatcher (ctx: SqliteContext) (reference: string) (version: ItemVersion) =
+
+
+
+        ()
