@@ -56,11 +56,19 @@ module Activities =
                     match ah with
                     | AddTagIfExists(tag, ``default``) ->
                         w.WriteString("type", "add-tag-if-exists")
-
-                    | AddTimestamp format -> w.WriteString("type", "add-timestamp")
+                        w.WriteString("tag", tag)
+                        ``default`` |> Option.iter (fun v -> w.WriteString("default", v))
+                    | AddTimestamp format ->
+                        w.WriteString("type", "add-timestamp")
+                        format |> Option.iter (fun v -> w.WriteString("format", v))
                     | AddCategory -> w.WriteString("type", "add-category")
-                    | AddConstant value -> w.WriteString("type", "add-constant")
-                    | AddMetadataValueIfExists(key, ``default``) -> w.WriteString("type", "add-metadata-value-if-exists")
+                    | AddConstant value ->
+                        w.WriteString("type", "add-constant")
+                        w.WriteString("value", value)
+                    | AddMetadataValueIfExists(key, ``default``) ->
+                        w.WriteString("type", "add-metadata-value-if-exists")
+                        w.WriteString("key", key)
+                        ``default`` |> Option.iter (fun v -> w.WriteString("default", v))
                     | AddWatcherReference -> w.WriteString("type", "add-watcher-reference")
                     | AddWatcherName -> w.WriteString("type", "add-watcher-name")
                     | AddActionReference -> w.WriteString("type", "add-action-reference")
