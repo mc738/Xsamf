@@ -20,7 +20,7 @@ module Activities =
             | ItemVersion.Specific version ->
                 [ "WHERE action_id = @0 AND version = @1" ], [ box action.Id; box version ]
 
-        
+
         Operations.selectActivityActionVersionRecord ctx conditions parameters
         |> FetchResult.fromOption "Failed to find action version"
         |> FetchResult.bind (fun av ->
@@ -33,11 +33,19 @@ module Activities =
                    Rule = ar
                    Outcomes = failwith "todo"
                    Hasher = failwith "todo"
-                   AdditionMetadata = failwith "todo"
-                   AdditionTags = failwith "todo" }
+                   AdditionMetadata =
+                     Operations.selectActivityActionVersionMetadataItemRecords
+                         ctx
+                         [ "WHERE version_id = @0" ]
+                         [ av.Id ]
+                     |> List.map (fun md -> md.ItemKey, md.ItemValue)
+                     |> Map.ofList
+                   AdditionTags =
+                     Operations.selectActivityActionVersionTagRecords ctx [ "WHERE version_id = @0" ] [ av.Id ]
+                     |> List.map (fun t -> t.Tag) }
                 : ActivityAction))
             |> FetchResult.fromResult)
-        
+
     let getWatcherVersion (ctx: SqliteContext) (watcher: Records.ActivityWatcher) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
