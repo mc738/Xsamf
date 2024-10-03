@@ -23,7 +23,7 @@ module Activities =
         | AddActionReference
         | AddActionName
         | AddType
-        
+
         static member FromJson(element: JsonElement) =
             match Json.tryGetStringProperty "type" element with
             | Some t ->
@@ -31,32 +31,42 @@ module Activities =
                 | "add-tag-if-exists" ->
                     match Json.tryGetStringProperty "tag" element with
                     | None -> Error "Missing `tag` property"
-                    | Some tag ->
-                        AddTagIfExists (tag, Json.tryGetStringProperty "default" element)
-                        |> Ok
-                | "add-timestamp" ->
-                    AddTimestamp (Json.tryGetStringProperty "format" element)
-                    |> Ok
+                    | Some tag -> AddTagIfExists(tag, Json.tryGetStringProperty "default" element) |> Ok
+                | "add-timestamp" -> AddTimestamp(Json.tryGetStringProperty "format" element) |> Ok
                 | "add-category" -> Ok AddCategory
                 | "add-constant" ->
                     match Json.tryGetStringProperty "value" element with
                     | None -> Error "Missing `value` property"
-                    | Some value ->
-                        AddConstant value |> Ok
+                    | Some value -> AddConstant value |> Ok
                 | "add-metadata-value-if-exists" ->
                     match Json.tryGetStringProperty "key" element with
                     | None -> Error "Missing `key` property"
-                    | Some key ->
-                        AddMetadataValueIfExists (key, Json.tryGetStringProperty "default" element)
-                        |> Ok
+                    | Some key -> AddMetadataValueIfExists(key, Json.tryGetStringProperty "default" element) |> Ok
                 | "add-watcher-reference" -> Ok AddWatcherReference
+                | "add-watcher-name" -> Ok AddWatcherName
                 | "add-action-reference" -> Ok AddActionReference
                 | "add-action-name" -> Ok AddActionName
                 | "add-type" -> Ok AddType
                 | t -> Error $"Unknown type: `{t}`"
             | None -> Error "Missing `type` property"
-        
-        
+
+        member ah.WriteToJsonValue(writer: Utf8JsonWriter) =
+            Json.writeObject
+                (fun w ->
+                    match ah with
+                    | AddTagIfExists(tag, ``default``) ->
+                        w.WriteString("type", "add-tag-if-exists")
+
+                    | AddTimestamp format -> w.WriteString("type", "add-timestamp")
+                    | AddCategory -> w.WriteString("type", "add-category")
+                    | AddConstant value -> w.WriteString("type", "add-constant")
+                    | AddMetadataValueIfExists(key, ``default``) -> w.WriteString("type", "add-metadata-value-if-exists")
+                    | AddWatcherReference -> w.WriteString("type", "add-watcher-reference")
+                    | AddWatcherName -> w.WriteString("type", "add-watcher-name")
+                    | AddActionReference -> w.WriteString("type", "add-action-reference")
+                    | AddActionName -> w.WriteString("type", "add-action-name")
+                    | AddType -> w.WriteString("type", "add-type"))
+                writer
 
     [<RequireQualifiedAccess>]
     type ActivityCategory =
