@@ -1,11 +1,10 @@
 namespace Xsamf.V1.Common
 
-open System.Text.Json
-open FsToolbox.Core.Results
-
 module Utils =
 
     open System
+    open System.Text.Json
+    open FsToolbox.Core.Results
 
     let createReference () = Guid.NewGuid().ToString("n")
 
@@ -63,3 +62,15 @@ module Utils =
                   Message = message
                   Exception = None }
                 |> FetchResult.Failure
+
+
+    module Json =
+
+        let tryParseToElement (str: string) =
+            try
+                JsonDocument.Parse(str).RootElement |> Ok
+            with ex ->
+                { Message = $"Failure to parse json element: {ex.Message}"
+                  DisplayMessage = "Failure to parse json element"
+                  Exception = Some ex }
+                |> Error
