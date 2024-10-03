@@ -1,5 +1,6 @@
 module Xsamf.V1.Store.SQLite
 
+open System.Text
 open Xsamf.V1.Domain.Monitoring.Activities
 
 [<RequireQualifiedAccess>]
@@ -19,18 +20,24 @@ module Activities =
             | ItemVersion.Specific version ->
                 [ "WHERE action_id = @0 AND version = @1" ], [ box action.Id; box version ]
 
+        
         Operations.selectActivityActionVersionRecord ctx conditions parameters
-        |> Option.map (fun av ->
-            ({ Reference = av.Id
-               Name = failwith "todo"
-               Rule = ActivityRule
-               Outcomes = failwith "todo"
-               Hasher = failwith "todo"
-               AdditionMetadata = failwith "todo"
-               AdditionTags = failwith "todo" }
-            : ActivityAction))
         |> FetchResult.fromOption "Failed to find action version"
-
+        |> FetchResult.bind (fun av ->
+            av.RuleBlob.ToBytes()
+            |> Encoding.UTF8.GetString
+            |> ActivityRule.Deserialize
+            |> Result.map (fun ar ->
+                ({ Reference = av.Id
+                   Name = av.Name
+                   Rule = ar
+                   Outcomes = failwith "todo"
+                   Hasher = failwith "todo"
+                   AdditionMetadata = failwith "todo"
+                   AdditionTags = failwith "todo" }
+                : ActivityAction))
+            |> FetchResult.fromResult)
+        
     let getWatcherVersion (ctx: SqliteContext) (watcher: Records.ActivityWatcher) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
