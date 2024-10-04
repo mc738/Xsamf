@@ -26,6 +26,15 @@ module Activities =
                     Json.tryGetStringProperty "hashAlgorithm" element
                     |> Option.map HashAlgorithm.Deserialize
                     |> Option.defaultValue HashAlgorithm.None })
+            
+        static member Deserialize(str: string) =
+            Json.tryParseToElement str
+            |> Result.bind (fun el ->
+                ActivityHasher.FromJson el
+                |> Result.mapError (fun e ->
+                    { Message = e
+                      DisplayMessage = e
+                      Exception = None }))
 
         member ah.WriteToJsonValue(writer: Utf8JsonWriter) =
             Json.writeObject
@@ -72,16 +81,7 @@ module Activities =
                 | "add-type" -> Ok AddType
                 | t -> Error $"Unknown type: `{t}`"
             | None -> Error "Missing `type` property"
-            
-        static member Deserialize(str: string) =
-            Json.tryParseToElement str
-            |> Result.bind (fun el ->
-                ActivityHasher.FromJson el
-                |> Result.mapError (fun e ->
-                    { Message = e
-                      DisplayMessage = e
-                      Exception = None }))
-
+        
         member ah.WriteToJsonValue(writer: Utf8JsonWriter) =
             Json.writeObject
                 (fun w ->
