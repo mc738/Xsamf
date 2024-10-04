@@ -7,7 +7,7 @@ module JsonConverters =
     open System.Text.Json
     open System.Text.Json.Serialization
     open Xsamf.V1.Domain.Monitoring.Dms
-   
+ 
     type DmsRuleConverter() =
 
         inherit JsonConverter<DmsRule>()
