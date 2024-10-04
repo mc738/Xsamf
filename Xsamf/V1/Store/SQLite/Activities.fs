@@ -23,6 +23,11 @@ module Activities =
 
         Operations.selectActivityActionVersionRecord ctx conditions parameters
         |> FetchResult.fromOption "Failed to find action version"
+        |> FetchResult.map (fun av ->
+            Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ av.HasherVersionId ]
+            |> FetchResult.fromOption ""
+            
+            )
         |> FetchResult.bind (fun av ->
             av.RuleBlob.ToBytes()
             |> Encoding.UTF8.GetString
