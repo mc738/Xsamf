@@ -72,6 +72,15 @@ module Activities =
                 | "add-type" -> Ok AddType
                 | t -> Error $"Unknown type: `{t}`"
             | None -> Error "Missing `type` property"
+            
+        static member Deserialize(str: string) =
+            Json.tryParseToElement str
+            |> Result.bind (fun el ->
+                ActivityHasher.FromJson el
+                |> Result.mapError (fun e ->
+                    { Message = e
+                      DisplayMessage = e
+                      Exception = None }))
 
         member ah.WriteToJsonValue(writer: Utf8JsonWriter) =
             Json.writeObject
