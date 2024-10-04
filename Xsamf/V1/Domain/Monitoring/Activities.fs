@@ -12,6 +12,29 @@ module Activities =
           Separator: string option
           HashAlgorithm: HashAlgorithm }
 
+        static member FromJson(element: JsonElement) =
+            Json.tryGetArrayProperty "steps" element
+            |> Option.map (
+                List.map ActivityIncidentHasherStep.FromJson
+                >> aggregateStringErrors "Failed to create activity hasher steps."
+            )
+            |> Option.defaultValue (Error "Missing `steps` property")
+            |> Result.map (fun steps ->
+                { Steps = steps
+                  Separator = Json.tryGetStringProperty "separator" element
+                  HashAlgorithm =
+                    Json.tryGetStringProperty "hashAlgorithm" element
+                    |> Option.map HashAlgorithm.Deserialize
+                    |> Option.defaultValue HashAlgorithm.None })
+
+        member ah.WriteToJsonValue(writer: Utf8JsonWriter) =
+            Json.writeObject
+                (fun w ->
+                    Json.writeArray (fun aw -> ah.Steps |> List.iter (fun s -> s.WriteToJsonValue aw)) "steps" w
+                    ah.Separator |> Option.iter (fun v -> w.WriteString("separator", v))
+                    w.WriteString("hashAlgorithm", ah.HashAlgorithm.Serialize()))
+                writer
+
     and ActivityIncidentHasherStep =
         | AddTagIfExists of Tag: string * Default: string option
         | AddTimestamp of Format: string option
