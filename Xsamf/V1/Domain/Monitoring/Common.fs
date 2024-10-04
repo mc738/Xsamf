@@ -30,6 +30,17 @@ module Common =
         | SHA256
         | None
         
+        static member Deserialize(str: string) =
+            match str.ToLower() with
+            | "sha256" -> HashAlgorithm.SHA256
+            | "none" -> HashAlgorithm.None
+            | _ -> HashAlgorithm.None
+            
+        member ha.Serialize() =
+            match ha with
+            | SHA256 -> "sha256"
+            | None -> "none"
+        
         member ha.HashString(str: string) =
             match ha with
             | SHA256 -> str.GetSHA256Hash()
