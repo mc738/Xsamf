@@ -25,7 +25,13 @@ module Activities =
         |> FetchResult.fromOption "Failed to find action version"
         |> FetchResult.map (fun av ->
             Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ av.HasherVersionId ]
-            |> FetchResult.fromOption ""
+            |> FetchResult.fromOption "Failed to find actvitiy hasher version"
+            |> FetchResult.map (fun ahv ->
+                ahv.HasherBlob.ToBytes()
+                |> Encoding.UTF8.GetString
+                |> ActivityHasher
+                
+                )
             
             )
         |> FetchResult.bind (fun av ->
