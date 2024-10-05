@@ -2,6 +2,7 @@ module Xsamf.V1.Store.SQLite
 
 open System.Text
 open Xsamf.V1.Domain.Monitoring.Activities
+open Xsamf.V1.Store.Shared.Domain.Common
 
 [<RequireQualifiedAccess>]
 module Activities =
@@ -13,8 +14,20 @@ module Activities =
     open Xsamf.V1.Store.Shared.Domain.Common
     open Xsamf.V1.Store.SQLite.Persistence
 
-    let getActionVersionOutcomes (ctx: SqliteContext) =
-        ()
+    let getActionVersionOutcomes (ctx: SqliteContext) (actionVersionId: string) (version: ItemVersion) =
+        Operations.selectActivityActionOutcomeRecords ctx [ "WHERE action_version_id = @0" ] [ actionVersionId ]
+        |> List.map (fun ao ->
+            let (conditions, parameters) =
+                match version with
+                | ItemVersion.Latest -> [ "WHERE outcome_id = @0 ORDER BY version DESC LIMIT 1" ], [ box ao.Id ]
+                | ItemVersion.Specific version ->
+                    [ "WHERE outcome_id = @0 AND version = @1" ], [ box ao.Id; box version ]
+            
+            Operations.selectActivityActionOutcomeVersionRecord ctx conditions parameters
+            |> FetchResult.fromOption "Failed to find activity action outcome version"
+            
+            
+            )
     
     let getActivityHasher (ctx: SqliteContext) (versionId: string) =
          Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ versionId ]
@@ -25,12 +38,12 @@ module Activities =
                 |> ActivityHasher.Deserialize
                 |> FetchResult.fromResult)
         
-    let getActionVersion (ctx: SqliteContext) (action: Records.ActivityAction) (version: ItemVersion) =
+    let getActionVersion (ctx: SqliteContext) (actionId: string) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
-            | ItemVersion.Latest -> [ "WHERE action_id = @0 ORDER BY version DESC LIMIT 1" ], [ box action.Id ]
+            | ItemVersion.Latest -> [ "WHERE action_id = @0 ORDER BY version DESC LIMIT 1" ], [ box actionId ]
             | ItemVersion.Specific version ->
-                [ "WHERE action_id = @0 AND version = @1" ], [ box action.Id; box version ]
+                [ "WHERE action_id = @0 AND version = @1" ], [ box actionId; box version ]
 
 
         Operations.selectActivityActionVersionRecord ctx conditions parameters
