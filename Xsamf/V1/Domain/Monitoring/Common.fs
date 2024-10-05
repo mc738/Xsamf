@@ -1,12 +1,13 @@
 namespace Xsamf.V1.Domain.Monitoring
 
-open System.Text.Json
-open FsToolbox.Core
-open FsToolbox.Extensions.Strings
-
 [<AutoOpen>]
 module Common =
 
+    open System.Text.Json
+    open FsToolbox.Core
+    open FsToolbox.Extensions.Strings
+    open Xsamf.V1.Common.Utils
+    
     [<RequireQualifiedAccess>]
     type ActionOutcome =
         | CreateIncident
@@ -34,6 +35,30 @@ module Common =
                 | "deactivate-probe-watcher" -> Ok ActionOutcome.DeactivateProbeWatcher
                 | t -> Error $"Unknown action outcome type: `{t}`"
             | None -> Error "Missing `type` property"
+
+        static member Deserialize(str: string) =
+            Json.tryParseToElement str
+            |> Result.bind (fun el ->
+                ActionOutcome.FromJson el
+                |> Result.mapError (fun e ->
+                    { Message = e
+                      DisplayMessage = e
+                      Exception = None }))
+
+        member ao.WriteToJsonValue(writer: Utf8JsonWriter) =
+            Json.writeObject
+                (fun w ->
+                    match ao with
+                    | CreateIncident -> w.WriteString("type", "create-incident")
+                    | CloseIncident -> w.WriteString("type", "close-incident")
+                    | CloseAllIncidentsForEntity -> w.WriteString("type", "close-all-incidents-for-entity")
+                    | ActivateHeartBeatWatcher -> w.WriteString("type", "activate-heart-beat-watcher")
+                    | DeactivateHeartBeatWatcher -> w.WriteString("type", "deactivate-heart-beat-watcher")
+                    | ActivateActivityWatcher -> w.WriteString("type", "activate-activity-watcher")
+                    | DeactivateActivityWatcher -> w.WriteString("type", "deactivate-activity-watcher")
+                    | ActivateProbeWatcher -> w.WriteString("type", "activate-probe-watcher")
+                    | DeactivateProbeWatcher -> w.WriteString("type", "deactivate-probe-watcher"))
+                writer
 
     [<RequireQualifiedAccess>]
     type MonitoringAuthType =
