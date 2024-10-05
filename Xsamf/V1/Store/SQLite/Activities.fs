@@ -1,6 +1,7 @@
 module Xsamf.V1.Store.SQLite
 
 open System.Text
+open Xsamf.V1.Domain.Monitoring
 open Xsamf.V1.Domain.Monitoring.Activities
 open Xsamf.V1.Store.Shared.Domain.Common
 
@@ -22,42 +23,44 @@ module Activities =
                 | ItemVersion.Latest -> [ "WHERE outcome_id = @0 ORDER BY version DESC LIMIT 1" ], [ box ao.Id ]
                 | ItemVersion.Specific version ->
                     [ "WHERE outcome_id = @0 AND version = @1" ], [ box ao.Id; box version ]
-            
+
             Operations.selectActivityActionOutcomeVersionRecord ctx conditions parameters
             |> FetchResult.fromOption "Failed to find activity action outcome version"
-            
-            
-            )
-    
+            |> FetchResult.bind (fun aov ->
+                aov.OutcomeBlob.Convert ActionOutcome.Deserialize |> FetchResult.fromResult))
+        |> FetchResult.ifAllSuccess "Failed to deserialize activity action outcome version"
+
+
     let getActivityHasher (ctx: SqliteContext) (versionId: string) =
-         Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ versionId ]
-            |> FetchResult.fromOption "Failed to find activity hasher version"
-            |> FetchResult.bind (fun ahv ->
-                ahv.HasherBlob.ToBytes()
-                |> Encoding.UTF8.GetString
-                |> ActivityHasher.Deserialize
-                |> FetchResult.fromResult)
-        
+        Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ versionId ]
+        |> FetchResult.fromOption "Failed to find activity hasher version"
+        |> FetchResult.bind (fun ahv ->
+            ahv.HasherBlob.ToBytes()
+            |> Encoding.UTF8.GetString
+            |> ActivityHasher.Deserialize
+            |> FetchResult.fromResult)
+
     let getActionVersion (ctx: SqliteContext) (actionId: string) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
             | ItemVersion.Latest -> [ "WHERE action_id = @0 ORDER BY version DESC LIMIT 1" ], [ box actionId ]
-            | ItemVersion.Specific version ->
-                [ "WHERE action_id = @0 AND version = @1" ], [ box actionId; box version ]
+            | ItemVersion.Specific version -> [ "WHERE action_id = @0 AND version = @1" ], [ box actionId; box version ]
 
 
         Operations.selectActivityActionVersionRecord ctx conditions parameters
         |> FetchResult.fromOption "Failed to find action version"
         |> FetchResult.merge (fun av ahv -> av, ahv) (fun av -> getActivityHasher ctx av.HasherVersionId)
-        |> FetchResult.bind (fun (av, ahv) ->
-            av .RuleBlob.ToBytes()
+        |> FetchResult.merge (fun (av, ahv) aos -> av, ahv, aos) (fun (av, _) ->
+            getActionVersionOutcomes ctx av.Id ItemVersion.Latest)
+        |> FetchResult.bind (fun (av, ahv, aos) ->
+            av.RuleBlob.ToBytes()
             |> Encoding.UTF8.GetString
             |> ActivityRule.Deserialize
             |> Result.map (fun ar ->
                 ({ Reference = av.Id
                    Name = av.Name
                    Rule = ar
-                   Outcomes = failwith "todo"
+                   Outcomes = aos
                    Hasher = ahv
                    AdditionMetadata =
                      Operations.selectActivityActionVersionMetadataItemRecords
