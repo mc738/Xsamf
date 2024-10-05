@@ -13,6 +13,18 @@ module Activities =
     open Xsamf.V1.Store.Shared.Domain.Common
     open Xsamf.V1.Store.SQLite.Persistence
 
+    let getActionVersionOutcomes (ctx: SqliteContext) =
+        ()
+    
+    let getActivityHasher (ctx: SqliteContext) (versionId: string) =
+         Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ versionId ]
+            |> FetchResult.fromOption "Failed to find activity hasher version"
+            |> FetchResult.bind (fun ahv ->
+                ahv.HasherBlob.ToBytes()
+                |> Encoding.UTF8.GetString
+                |> ActivityHasher.Deserialize
+                |> FetchResult.fromResult)
+        
     let getActionVersion (ctx: SqliteContext) (action: Records.ActivityAction) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
@@ -23,15 +35,7 @@ module Activities =
 
         Operations.selectActivityActionVersionRecord ctx conditions parameters
         |> FetchResult.fromOption "Failed to find action version"
-        |> FetchResult.merge (fun av ahv -> av, ahv) (fun av ->
-            Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ av.HasherVersionId ]
-            |> FetchResult.fromOption "Failed to find actvitiy hasher version"
-            |> FetchResult.bind (fun ahv ->
-                ahv.HasherBlob.ToBytes()
-                |> Encoding.UTF8.GetString
-                |> ActivityHasher.Deserialize
-                |> FetchResult.fromResult)
-            )
+        |> FetchResult.merge (fun av ahv -> av, ahv) (fun av -> getActivityHasher ctx av.HasherVersionId)
         |> FetchResult.bind (fun (av, ahv) ->
             av .RuleBlob.ToBytes()
             |> Encoding.UTF8.GetString
