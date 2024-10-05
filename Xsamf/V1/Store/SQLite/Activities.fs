@@ -23,19 +23,17 @@ module Activities =
 
         Operations.selectActivityActionVersionRecord ctx conditions parameters
         |> FetchResult.fromOption "Failed to find action version"
-        |> FetchResult.map (fun av ->
+        |> FetchResult.merge (fun av ahv -> av, ahv) (fun av ->
             Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ av.HasherVersionId ]
             |> FetchResult.fromOption "Failed to find actvitiy hasher version"
-            |> FetchResult.map (fun ahv ->
+            |> FetchResult.bind (fun ahv ->
                 ahv.HasherBlob.ToBytes()
                 |> Encoding.UTF8.GetString
-                |> ActivityHasher
-                
-                )
-            
+                |> ActivityHasher.Deserialize
+                |> FetchResult.fromResult)
             )
-        |> FetchResult.bind (fun av ->
-            av.RuleBlob.ToBytes()
+        |> FetchResult.bind (fun (av, ahv) ->
+            av .RuleBlob.ToBytes()
             |> Encoding.UTF8.GetString
             |> ActivityRule.Deserialize
             |> Result.map (fun ar ->
@@ -43,7 +41,7 @@ module Activities =
                    Name = av.Name
                    Rule = ar
                    Outcomes = failwith "todo"
-                   Hasher = failwith "todo"
+                   Hasher = ahv
                    AdditionMetadata =
                      Operations.selectActivityActionVersionMetadataItemRecords
                          ctx
