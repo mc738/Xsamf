@@ -62,7 +62,16 @@ module Utils =
                   Message = message
                   Exception = None }
                 |> FetchResult.Failure
-
+            
+        let ifAllSuccess<'T> (message: string) (results: FetchResult<'T> list) =
+            results
+            |> FetchResult.unzipResults
+            |> fun (results, failures) ->
+                match failures.IsEmpty with
+                | true -> FetchResult.Success results
+                | false ->
+                    FailureResult.Aggregate(failures, message)
+                    |> FetchResult.Failure 
 
     module Json =
 
@@ -74,3 +83,21 @@ module Utils =
                   DisplayMessage = "Failure to parse json element"
                   Exception = Some ex }
                 |> Error
+
+    [<AutoOpen>]
+    module Extensions =
+        
+        open System.Text
+        open Freql.Core.Common.Types
+        
+        type BlobField with
+        
+            
+            member bf.GetValueAsString() =
+                bf.ToBytes()
+                |> Encoding.UTF8.GetString
+                
+            member bf.Convert<'T>(handler: string -> Result<'T, FailureResult>) =
+                bf.GetValueAsString() |> handler
+        
+        ()
