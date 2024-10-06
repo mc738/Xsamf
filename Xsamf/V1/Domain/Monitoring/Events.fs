@@ -36,8 +36,8 @@ module Events =
                 )
 
     type MonitoringEvent =
-        // Dms
-        | NewDmsWatcherCreated of NewDmsWatcherCreatedEvent
+        // Heart beat
+        | NewHeartBeatWatcherCreated of NewHeartBeatWatcherCreatedEvent
         // Activities
         | NewActivityWatcherCreated
         // Probes
@@ -46,7 +46,7 @@ module Events =
 
         static member Deserialize(name: string, data: string) =
             match name with
-            | _ when NewDmsWatcherCreatedEvent.Name() |> strEquals name -> fromJson<NewDmsWatcherCreatedEvent> data
+            | _ when NewHeartBeatWatcherCreatedEvent.Name() |> strEquals name -> fromJson<NewHeartBeatWatcherCreatedEvent> data
             | _ ->
                 let message = $"Unknowing event type: `{name}`"
 
@@ -62,12 +62,12 @@ module Events =
 
         member me.TrySerialize() =
             match me with
-            | NewDmsWatcherCreated data -> toJson data |> Result.map (fun r -> NewDmsWatcherCreatedEvent.Name(), r)
+            | NewHeartBeatWatcherCreated data -> toJson data |> Result.map (fun r -> NewHeartBeatWatcherCreatedEvent.Name(), r)
             | NewActivityWatcherCreated -> failwith "todo"
             | NewProbeWatcherCreated -> failwith "todo"
 
 
-    and [<CLIMutable>] NewDmsWatcherCreatedEvent =
+    and [<CLIMutable>] NewHeartBeatWatcherCreatedEvent =
         { [<JsonPropertyName "reference">]
           Reference: string
           [<JsonPropertyName "createdDate">]

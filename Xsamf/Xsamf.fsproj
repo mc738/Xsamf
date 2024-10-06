@@ -19,11 +19,6 @@
         <Compile Include="V1\Domain\Monitoring\Probes.fs" />
         <Compile Include="V1\Domain\Monitoring\Events.fs" />
         <Compile Include="V1\Domain\JsonConverters.fs" />
-        <Compile Include="V1\Monitoring\Rules\Domain.fs" />
-        <Folder Include="V1\Monitoring\Dms\" />
-        <Compile Include="V1\Monitoring\Activities\Domain.fs" />
-        <Compile Include="V1\Monitoring\Probes\Domain.fs" />
-        <Folder Include="V1\Monitoring\Incidents\" />
         <Compile Include="V1\Store\Shared\Domain\Common.fs" />
         <Compile Include="V1\Store\Shared\Domain\Tags.fs" />
         <Compile Include="V1\Store\Shared\Domain\Tenants.fs" />
