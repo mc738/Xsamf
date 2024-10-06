@@ -12,6 +12,36 @@ module Activities =
     open Xsamf.V1.Store.Shared.Domain.Common
     open Xsamf.V1.Store.SQLite.Persistence
 
+    module Internal =
+
+        type WatcherOverview =
+            { WatcherId: string
+              WatcherActive: bool
+              EntityId: string
+              EntityActive: bool
+              TenantId: string
+              TenantActive: bool }
+
+            static member Sql() =
+                """
+                SELECT
+                    w.id AS watcher_id,
+                    w.active AS watcher_active,
+                    e.id AS entity_id,
+                    e.active AS entity_active,
+                    t.id AS tenant_id,
+                    t.active AS tenant_active
+                FROM activity_watchers w
+                         LEFT JOIN entities e ON w.entity_id = e.id
+                         LEFT JOIN tenants t ON e.tenant_id = t.id
+                WHERE w.id = @0;
+                """
+
+        let getWatcherOverview (ctx: SqliteContext) (watcherId: string) =
+            ctx.SelectSingleAnon<WatcherOverview>(WatcherOverview.Sql(), [ watcherId ])
+
+        ()
+
     let getActionVersionOutcomes (ctx: SqliteContext) (actionVersionId: string) (version: ItemVersion) =
         Operations.selectActivityActionOutcomeRecords ctx [ "WHERE action_version_id = @0" ] [ actionVersionId ]
         |> List.map (fun ao ->
@@ -30,9 +60,7 @@ module Activities =
     let getActivityHasher (ctx: SqliteContext) (versionId: string) =
         Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ versionId ]
         |> FetchResult.fromOption "Failed to find activity hasher version"
-        |> FetchResult.bind (fun ahv ->
-            ahv.HasherBlob.Convert ActivityHasher.Deserialize
-            |> FetchResult.fromResult)
+        |> FetchResult.bind (fun ahv -> ahv.HasherBlob.Convert ActivityHasher.Deserialize |> FetchResult.fromResult)
 
     let getActionVersion (ctx: SqliteContext) (actionId: string) (version: ItemVersion) =
         let (conditions, parameters) =
@@ -67,23 +95,31 @@ module Activities =
                 : ActivityAction))
             |> FetchResult.fromResult)
 
-    let getWatcherVersion (ctx: SqliteContext) (watcher: Records.ActivityWatcher) (version: ItemVersion) =
+    let getWatcherVersionActions (ctx: SqliteContext) (watcherVersionId: string) (version: ItemVersion) =
+        Operations.selectActivityActionRecords ctx [ "WHERE watcher_version_id = @0" ] [ watcherVersionId ]
+        |> List.map (fun aa -> getActionVersion ctx aa.WatcherVersionId version)
+        |> FetchResult.ifAllSuccess "Failed to create watcher version actions"
+
+    let getWatcherVersion (ctx: SqliteContext) (watcherId: string) (version: ItemVersion) =
         let (conditions, parameters) =
             match version with
-            | ItemVersion.Latest -> [ "WHERE watcher_id = @0 ORDER BY version DESC LIMIT 1" ], [ box watcher.Id ]
+            | ItemVersion.Latest -> [ "WHERE watcher_id = @0 ORDER BY version DESC LIMIT 1" ], [ box watcherId ]
             | ItemVersion.Specific version ->
-                [ "WHERE watcher_id = @0 AND version = @1" ], [ box watcher.Id; box version ]
+                [ "WHERE watcher_id = @0 AND version = @1" ], [ box watcherId; box version ]
 
-        Operations.selectActivityWatcherRecord ctx [ "WHERE id = @0" ] [ id ]
+        Internal.getWatcherOverview ctx watcherId
         |> Option.bind (fun aw ->
             Operations.selectActivityWatcherVersionRecord ctx conditions parameters
             |> Option.map (fun awv -> aw, awv))
-        |> Option.map (fun (aw, awv) ->
-            ({ Reference = aw.Id
+        |> FetchResult.fromOption "Failed to get watcher version"
+        |> FetchResult.merge (fun (aw, awv) aas -> aw, awv, aas) (fun (aw, awv) ->
+            getWatcherVersionActions ctx awv.Id version)
+        |> FetchResult.map (fun (aw, awv, aas) ->
+            ({ Reference = aw.WatcherId
                Name = awv.Name
-               TenantReference = ""
+               TenantReference = aw.TenantId
                EntityReference = aw.EntityId
-               Actions = failwith "todo"
+               Actions = aas
                AdditionMetadata =
                  Operations.selectActivityWatcherVersionMetadataItemRecords ctx [ "WHERE version_id = @0" ] [ awv.Id ]
                  |> List.map (fun amd -> amd.ItemKey, amd.ItemValue)
@@ -92,11 +128,3 @@ module Activities =
                  Operations.selectActivityWatcherVersionTagsRecords ctx [ "WHERE version_id = @0" ] [ awv.Id ]
                  |> List.map (fun at -> at.Tag) }
             : ActivityWatcher))
-        |> FetchResult.fromOption "Failed to get watcher version"
-
-
-    let getWatcher (ctx: SqliteContext) (reference: string) (version: ItemVersion) =
-
-
-
-        ()
