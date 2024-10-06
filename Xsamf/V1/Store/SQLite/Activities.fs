@@ -1,16 +1,13 @@
 module Xsamf.V1.Store.SQLite
 
-open System.Text
-open Xsamf.V1.Domain.Monitoring
-open Xsamf.V1.Domain.Monitoring.Activities
-open Xsamf.V1.Store.Shared.Domain.Common
-
 [<RequireQualifiedAccess>]
 module Activities =
 
+    open System.Text
     open Freql.Sqlite
     open FsToolbox.Core.Results
     open Xsamf.V1.Common.Utils
+    open Xsamf.V1.Domain.Monitoring
     open Xsamf.V1.Domain.Monitoring.Activities
     open Xsamf.V1.Store.Shared.Domain.Common
     open Xsamf.V1.Store.SQLite.Persistence
@@ -30,14 +27,11 @@ module Activities =
                 aov.OutcomeBlob.Convert ActionOutcome.Deserialize |> FetchResult.fromResult))
         |> FetchResult.ifAllSuccess "Failed to deserialize activity action outcome version"
 
-
     let getActivityHasher (ctx: SqliteContext) (versionId: string) =
         Operations.selectActivityHasherVersionRecord ctx [ "WHERE id = @0" ] [ versionId ]
         |> FetchResult.fromOption "Failed to find activity hasher version"
         |> FetchResult.bind (fun ahv ->
-            ahv.HasherBlob.ToBytes()
-            |> Encoding.UTF8.GetString
-            |> ActivityHasher.Deserialize
+            ahv.HasherBlob.Convert ActivityHasher.Deserialize
             |> FetchResult.fromResult)
 
     let getActionVersion (ctx: SqliteContext) (actionId: string) (version: ItemVersion) =
@@ -53,9 +47,7 @@ module Activities =
         |> FetchResult.merge (fun (av, ahv) aos -> av, ahv, aos) (fun (av, _) ->
             getActionVersionOutcomes ctx av.Id ItemVersion.Latest)
         |> FetchResult.bind (fun (av, ahv, aos) ->
-            av.RuleBlob.ToBytes()
-            |> Encoding.UTF8.GetString
-            |> ActivityRule.Deserialize
+            av.RuleBlob.Convert ActivityRule.Deserialize
             |> Result.map (fun ar ->
                 ({ Reference = av.Id
                    Name = av.Name
