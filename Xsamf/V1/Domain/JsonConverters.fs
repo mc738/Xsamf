@@ -2,12 +2,13 @@ namespace Xsamf.V1.Domain
 
 open Xsamf.V1.Domain.Monitoring
 open Xsamf.V1.Domain.Monitoring.Activities
+open Xsamf.V1.Domain.Monitoring.HeartBeats
 
 module JsonConverters =
 
     open System.Text.Json
     open System.Text.Json.Serialization
-    open Xsamf.V1.Domain.Monitoring.Dms
+    open Xsamf.V1.Domain.Monitoring.HeartBeats
  
     type ActionOutcomeConverter() =
         inherit JsonConverter<ActionOutcome>()
@@ -24,9 +25,9 @@ module JsonConverters =
 
         override this.Write(writer, value, options) = value.WriteToJsonValue writer
     
-    type DmsRuleConverter() =
+    type HeartBeatRuleConverter() =
 
-        inherit JsonConverter<DmsRule>()
+        inherit JsonConverter<HeartBeatRule>()
 
         override this.Read(reader, typeToConvert, options) =
             if reader.TokenType <> JsonTokenType.StartObject then
@@ -34,7 +35,7 @@ module JsonConverters =
 
             use doc = JsonDocument.ParseValue(&reader)
 
-            match DmsRule.FromJson doc.RootElement with
+            match HeartBeatRule.FromJson doc.RootElement with
             | Ok rule -> rule
             | Error errorValue -> raise (JsonException(errorValue))
 

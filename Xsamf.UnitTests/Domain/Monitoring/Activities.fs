@@ -2,6 +2,7 @@ namespace Xsamf.UnitTests.Domain.Monitoring.Activities
 
 open System
 open Microsoft.VisualStudio.TestTools.UnitTesting
+open Xsamf.V1.Domain.Monitoring
 open Xsamf.V1.Domain.Monitoring.Activities
 
 [<AutoOpen>]
@@ -11,6 +12,7 @@ module private Internal =
         ({ Reference = ""
            WatcherReference = ""
            Timestamp = DateTime.MinValue
+           Auth = MonitoringAuthType.None
            Category = ActivityCategory.Information
            Metadata = Map.empty
            Tags = [] }

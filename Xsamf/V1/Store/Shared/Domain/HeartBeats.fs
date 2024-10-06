@@ -3,12 +3,12 @@ namespace Xsamf.V1.Store.Shared.Domain
 open Xsamf.V1.Domain.Monitoring
 open Xsamf.V1.Store.Shared.Domain.Common
 
-module Dms =
+module HeartBeats =
 
     open System
     open Common
 
-    type NewDmsRequest =
+    type NewHeartBeatRequest =
         { TenantReference: string
           EntityReference: string
           Reference: NewReferenceType
@@ -17,7 +17,7 @@ module Dms =
           GracePeriod: TimeSpan
           Tags: string list }
 
-    type NewDmsCheckIn =
+    type NewHeartBeatCheckIn =
         { WatcherReference: string
           Reference: string //NewReferenceType
           Timestamp: DateTime //TimestampType
@@ -26,7 +26,7 @@ module Dms =
         
     
         
-    type DmsWatcherDetails =
+    type HeartBeatWatcherDetails =
         {
             TenantReference: string
             EntityReference: string
@@ -51,14 +51,14 @@ module Dms =
             AdditionTags: string list
         }
     
-    type DmsWatcherAction =
+    type HeartBeatWatcherAction =
         {
             Reference: string
             Name: string
             
         }
         
-    //type DmsWatcherAction =
+    //type HeartBeatWatcherAction =
     //    {
             
     //    }

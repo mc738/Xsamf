@@ -1,4 +1,4 @@
-module Xsamf.V1.Store.SQLite
+namespace Xsamf.V1.Store.SQLite
 
 [<RequireQualifiedAccess>]
 module Activities =

@@ -1,4 +1,4 @@
-namespace Xsamf.UnitTests.Domain.Monitoring.Dms
+namespace Xsamf.UnitTests.Domain.Monitoring.HeartBeat
 
 open System
 open System.IO
@@ -6,8 +6,7 @@ open System.Text
 open System.Text.Json
 open Microsoft.VisualStudio.TestTools.UnitTesting
 open Xsamf.V1.Domain.JsonConverters
-open Xsamf.V1.Domain.Monitoring.Activities
-open Xsamf.V1.Domain.Monitoring.Dms
+open Xsamf.V1.Domain.Monitoring.HeartBeats
 
 [<AutoOpen>]
 module private Internal =
@@ -28,39 +27,39 @@ module private Internal =
             Error ex.Message
 
 [<TestClass>]
-type DmsDomainRulesTests() =
+type HeartBeatDomainRulesTests() =
 
     [<TestMethod>]
-    member _.``DmsRule.CheckInPeriodPassed serialize and deserialize``() =
-        let expected = DmsRule.CheckInPeriodPassed
+    member _.``HeartBeatRule.CheckInPeriodPassed serialize and deserialize``() =
+        let expected = HeartBeatRule.CheckInPeriodPassed
 
         let serializedRule = writeJson expected.WriteToJsonValue
 
-        match serializedRule |> tryToJsonElement |> Result.bind DmsRule.FromJson with
+        match serializedRule |> tryToJsonElement |> Result.bind HeartBeatRule.FromJson with
         | Ok actual -> Assert.AreEqual(expected, actual)
         | Error e -> Assert.Fail $"Failed to deserialize: {e}"
 
     [<TestMethod>]
-    member _.``DmsRuleConverter DmsRule.CheckInPeriodPassed deserialized successfully``() =
+    member _.``HeartBeatRuleConverter HeartBeatRule.CheckInPeriodPassed deserialized successfully``() =
         let option = JsonSerializerOptions()
-        option.Converters.Add(DmsRuleConverter())
+        option.Converters.Add(HeartBeatRuleConverter())
 
         let rule = """{"type": "check-in-period-passed"}"""
 
-        let expected = DmsRule.CheckInPeriodPassed
+        let expected = HeartBeatRule.CheckInPeriodPassed
 
-        let actual = JsonSerializer.Deserialize<DmsRule>(rule, option)
+        let actual = JsonSerializer.Deserialize<HeartBeatRule>(rule, option)
 
         Assert.AreEqual(expected, actual)
         
     [<TestMethod>]
-    member _.``DmsRuleConverter DmsRule.CheckInPeriodPassed serialized successfully``() =
+    member _.``HeartBeatRuleConverter HeartBeatRule.CheckInPeriodPassed serialized successfully``() =
         let option = JsonSerializerOptions()
-        option.Converters.Add(DmsRuleConverter())
+        option.Converters.Add(HeartBeatRuleConverter())
 
         let expected = """{"type":"check-in-period-passed"}"""
 
-        let rule = DmsRule.CheckInPeriodPassed
+        let rule = HeartBeatRule.CheckInPeriodPassed
 
         let actual = JsonSerializer.Serialize(rule, option)
 

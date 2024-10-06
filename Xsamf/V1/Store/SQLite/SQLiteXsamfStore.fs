@@ -18,10 +18,10 @@ type SQLiteXsamfStore(ctx: SqliteContext) =
             ctx.ExecuteInTransaction(fun t -> SQLiteXsamfStore(t) :> IXsamfStore |> fn)
             |> Result.mapError (fun e -> e.Message)
 
-        member this.GetDmsWatcher(reference) = failwith "todo"
+        member this.GetHeartBeatWatcher(reference) = failwith "todo"
         member this.ReaderTest() = failwith "todo"
         member this.WriteTest() = failwith "todo"
-        member this.DmsCheckIn(var0) = failwith "todo"
+        member this.HeartBeatCheckIn(var0) = failwith "todo"
 
         member this.GetActivityWatcher(reference, version) =
             Activities.getWatcherVersion ctx reference version

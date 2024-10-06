@@ -4,9 +4,9 @@ Xsamf (e**X**tenable **S**ystem and **A**pplication **M**onitoring **F**ramework
 
 ## Monitoring types
 
-### Dead man's switch
+### Heart beats
 
-Dead man's switch monitoring involves a monitor calling back at regular intervals.
+Heart beat monitoring involves a monitor calling back at regular intervals.
 
 ### Activities
 

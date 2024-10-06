@@ -3,7 +3,7 @@ namespace Xsamf.V1.Domain.Monitoring
 // Suppress
 #nowarn "50001"
 
-module Dms =
+module HeartBeats =
 
     open System
     open System.Text.Json
@@ -11,7 +11,7 @@ module Dms =
     open FsToolbox.Core
     open Xsamf.V1.Common.Utils
 
-    type DmsCheckIn =
+    type HeartBeatCheckIn =
         { Reference: string
           TenantReference: string
           WatcherReference: string
@@ -21,12 +21,12 @@ module Dms =
           Tags: string list }
 
     /// <summary>
-    /// A special type of DMS check in that requires no auth or verification.
+    /// A special type of HeartBeat check in that requires no auth or verification.
     /// This can be useful for simple situations,
     /// however there are not checks to validate where the check in comes from.
     /// This requires the related watcher to have AllowAnonymous set to true. 
     /// </summary>
-    type AnonymousDmsCheckIn =
+    type AnonymousHeartBeatCheckIn =
         { Reference: string
           WatcherReference: string
           Timestamp: DateTime
@@ -34,73 +34,73 @@ module Dms =
           Tags: string list }
 
     [<RequireQualifiedAccess>]
-    type DmsRule =
+    type HeartBeatRule =
         | CheckInPeriodPassed
         | GracePeriodPassed
-        | Not of Rule: DmsRule
-        | And of RuleA: DmsRule * RuleB: DmsRule
-        | Or of RuleA: DmsRule * RuleB: DmsRule
-        | All of Rules: DmsRule list
-        | Any of Rules: DmsRule list
+        | Not of Rule: HeartBeatRule
+        | And of RuleA: HeartBeatRule * RuleB: HeartBeatRule
+        | Or of RuleA: HeartBeatRule * RuleB: HeartBeatRule
+        | All of Rules: HeartBeatRule list
+        | Any of Rules: HeartBeatRule list
 
         static member FromJson(element: JsonElement) =
             match Json.tryGetStringProperty "type" element with
             | Some t ->
                 match t with
-                | "check-in-period-passed" -> Ok DmsRule.CheckInPeriodPassed
-                | "grace-period-passed" -> Ok DmsRule.GracePeriodPassed
+                | "check-in-period-passed" -> Ok HeartBeatRule.CheckInPeriodPassed
+                | "grace-period-passed" -> Ok HeartBeatRule.GracePeriodPassed
                 | "not" ->
                     Json.tryGetProperty "rule" element
-                    |> Option.map DmsRule.FromJson
+                    |> Option.map HeartBeatRule.FromJson
                     |> Option.defaultValue (Error "Missing `rule` property")
-                    |> Result.map DmsRule.Not
+                    |> Result.map HeartBeatRule.Not
                 | "and" ->
                     match
                         Json.tryGetProperty "ruleA" element
-                        |> Option.map DmsRule.FromJson
+                        |> Option.map HeartBeatRule.FromJson
                         |> Option.defaultValue (Error "Missing `ruleA` property"),
                         Json.tryGetProperty "ruleB" element
-                        |> Option.map DmsRule.FromJson
+                        |> Option.map HeartBeatRule.FromJson
                         |> Option.defaultValue (Error "Missing `ruleB` property")
                     with
-                    | Ok ruleA, Ok ruleB -> DmsRule.And(ruleA, ruleB) |> Ok
+                    | Ok ruleA, Ok ruleB -> HeartBeatRule.And(ruleA, ruleB) |> Ok
                     | Error e, _ -> Error e
                     | _, Error e -> Error e
                 | "or" ->
                     match
                         Json.tryGetProperty "ruleA" element
-                        |> Option.map DmsRule.FromJson
+                        |> Option.map HeartBeatRule.FromJson
                         |> Option.defaultValue (Error "Missing `ruleA` property"),
                         Json.tryGetProperty "ruleB" element
-                        |> Option.map DmsRule.FromJson
+                        |> Option.map HeartBeatRule.FromJson
                         |> Option.defaultValue (Error "Missing `ruleB` property")
                     with
-                    | Ok ruleA, Ok ruleB -> DmsRule.Or(ruleA, ruleB) |> Ok
+                    | Ok ruleA, Ok ruleB -> HeartBeatRule.Or(ruleA, ruleB) |> Ok
                     | Error e, _ -> Error e
                     | _, Error e -> Error e
                 | "all" ->
                     match
                         Json.tryGetArrayProperty "rules" element
-                        |> Option.map (List.map DmsRule.FromJson >> aggregateStringErrors "Unable to create rules")
+                        |> Option.map (List.map HeartBeatRule.FromJson >> aggregateStringErrors "Unable to create rules")
                         |> Option.defaultValue (Error "Missing `rules` property")
                     with
-                    | Ok rules -> DmsRule.All rules |> Ok
+                    | Ok rules -> HeartBeatRule.All rules |> Ok
                     | Error e -> Error e
                 | "any" ->
                     match
                         Json.tryGetArrayProperty "rules" element
-                        |> Option.map (List.map DmsRule.FromJson >> aggregateStringErrors "Unable to create rules")
+                        |> Option.map (List.map HeartBeatRule.FromJson >> aggregateStringErrors "Unable to create rules")
                         |> Option.defaultValue (Error "Missing `rules` property")
                     with
-                    | Ok rules -> DmsRule.Any rules |> Ok
+                    | Ok rules -> HeartBeatRule.Any rules |> Ok
                     | Error e -> Error e
                 | _ -> Error $"Unknown rule type: `{t}`"
             | None -> Error "Missing `type` property"
 
-        [<CompilerMessage("This method exists for preliminary for testing purposes or when a deterministic check is require. For general use, use DmsRule.Test(previousCheckIn) To remove this warning add `#nowarn \"50001\"` to the source file.",
+        [<CompilerMessage("This method exists for preliminary for testing purposes or when a deterministic check is require. For general use, use HeartBeatRule.Test(previousCheckIn) To remove this warning add `#nowarn \"50001\"` to the source file.",
                           50001)>]
-        member dr.Test(currentDateTime: DateTime, nextCheckIn: DateTime, gracePeriod: TimeSpan) =
-            match dr with
+        member hbr.Test(currentDateTime: DateTime, nextCheckIn: DateTime, gracePeriod: TimeSpan) =
+            match hbr with
             | CheckInPeriodPassed -> currentDateTime > nextCheckIn
             | GracePeriodPassed -> currentDateTime > nextCheckIn.Add(gracePeriod)
             | Not rule -> rule.Test(currentDateTime, nextCheckIn, gracePeriod) |> not
@@ -117,13 +117,13 @@ module Dms =
                 rules
                 |> List.exists (fun r -> r.Test(currentDateTime, nextCheckIn, gracePeriod))
 
-        member dr.Test(nextCheckIn: DateTime, gracePeriod: TimeSpan) =
-            dr.Test(DateTime.UtcNow, nextCheckIn, gracePeriod)
+        member hbr.Test(nextCheckIn: DateTime, gracePeriod: TimeSpan) =
+            hbr.Test(DateTime.UtcNow, nextCheckIn, gracePeriod)
 
-        member dr.WriteToJsonValue(writer: Utf8JsonWriter) =
+        member hbr.WriteToJsonValue(writer: Utf8JsonWriter) =
             Json.writeObject
                 (fun w ->
-                    match dr with
+                    match hbr with
                     | CheckInPeriodPassed -> w.WriteString("type", "check-in-period-passed")
                     | GracePeriodPassed -> w.WriteString("type", "grace-period-passed")
                     | Not rule ->
@@ -150,10 +150,10 @@ module Dms =
                         Json.writeArray (fun aw -> rules |> List.iter (fun r -> r.WriteToJsonValue aw)) "rules" w)
                 writer
 
-    type DmsAction =
+    type HeartBeatAction =
         {
             Name: string
-            Rule: DmsRule
+            Rule: HeartBeatRule
             Outcomes: ActionOutcome list
             /// <summary>
             /// A collection of addition metadata that will be added to an activity if the action is triggered.
@@ -167,17 +167,17 @@ module Dms =
             AdditionTags: string list
         }
 
-        member da.Handle(newCheckInDate: DateTime, gracePeriod: TimeSpan) =
-            match da.Rule.Test(newCheckInDate, gracePeriod) with
+        member hba.Handle(newCheckInDate: DateTime, gracePeriod: TimeSpan) =
+            match hba.Rule.Test(newCheckInDate, gracePeriod) with
             | true ->
-                ({ Name = da.Name
-                   Outcomes = da.Outcomes
-                   AdditionMetadata = da.AdditionMetadata
-                   AdditionTags = da.AdditionTags }
-                : DmsActionResult)
-            | false -> DmsActionResult.Empty da.Name
+                ({ Name = hba.Name
+                   Outcomes = hba.Outcomes
+                   AdditionMetadata = hba.AdditionMetadata
+                   AdditionTags = hba.AdditionTags }
+                : HeartBeatActionResult)
+            | false -> HeartBeatActionResult.Empty hba.Name
 
-    and DmsActionResult =
+    and HeartBeatActionResult =
         { Name: string
           Outcomes: ActionOutcome list
           AdditionMetadata: Map<string, string>
@@ -191,7 +191,7 @@ module Dms =
 
         member dar.HasOutcomes() = dar.Outcomes.IsEmpty |> not
 
-    type DmsWatcher =
+    type HeartBeatWatcher =
         {
             TenantReference: string
             EntityReference: string
@@ -200,7 +200,7 @@ module Dms =
             AllowAnonymous: bool
             NextCheckInTime: DateTime
             GracePeriod: TimeSpan
-            Actions: DmsAction list
+            Actions: HeartBeatAction list
             Tags: string list
             /// <summary>
             /// A collection of addition metadata that will be added to an activity if the action is triggered.
@@ -214,9 +214,9 @@ module Dms =
             AdditionTags: string list
         }
 
-        member dw.Handle(filterEmpty: bool) =
-            dw.Actions
-            |> List.map (fun a -> a.Handle(dw.NextCheckInTime, dw.GracePeriod))
+        member hbw.Handle(filterEmpty: bool) =
+            hbw.Actions
+            |> List.map (fun a -> a.Handle(hbw.NextCheckInTime, hbw.GracePeriod))
             |> fun r ->
                 if filterEmpty then
                     r |> List.filter (fun aar -> aar.HasOutcomes())

@@ -14,7 +14,7 @@
         <Compile Include="V1\Domain\Core\Projects.fs" />
         <Compile Include="V1\Domain\Core\Users.fs" />
         <Compile Include="V1\Domain\Monitoring\Common.fs" />
-        <Compile Include="V1\Domain\Monitoring\Dms.fs" />
+        <Compile Include="V1\Domain\Monitoring\HeartBeats.fs" />
         <Compile Include="V1\Domain\Monitoring\Activities.fs" />
         <Compile Include="V1\Domain\Monitoring\Probes.fs" />
         <Compile Include="V1\Domain\Monitoring\Events.fs" />
@@ -29,7 +29,7 @@
         <Compile Include="V1\Store\Shared\Domain\Tenants.fs" />
         <Compile Include="V1\Store\Shared\Domain\Entities.fs" />
         <Compile Include="V1\Store\Shared\Domain\Watchers.fs" />
-        <Compile Include="V1\Store\Shared\Domain\Dms.fs" />
+        <Compile Include="V1\Store\Shared\Domain\HeartBeats.fs" />
         <Compile Include="V1\Store\Shared\Domain\Activities.fs" />
         <Compile Include="V1\Store\Shared\Domain\Incidents.fs" />
         <Compile Include="V1\Store\Shared\IXsamfStoreReader.fs" />
@@ -56,7 +56,7 @@
         <Compile Include="V1\Operations\Monitoring\Incidents\CreateOperations.fs" />
         <Compile Include="V1\Operations\Monitoring\Incidents\ReadOperations.fs" />
         <Compile Include="V1\Operations\Monitoring\Incidents\UpdateOperations.fs" />
-        <Compile Include="V1\Services\Monitoring\Dms.fs" />
+        <Compile Include="V1\Services\Monitoring\HeartBeat.fs" />
         <Compile Include="V1\Services\Monitoring\Activities.fs" />
     </ItemGroup>
 

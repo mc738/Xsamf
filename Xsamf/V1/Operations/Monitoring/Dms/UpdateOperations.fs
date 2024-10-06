@@ -1,23 +1,23 @@
-namespace Xsamf.V1.Operations.Monitoring.Dms
+namespace Xsamf.V1.Operations.Monitoring.HeartBeat
 
 open FsToolbox.Core.Results
 open Xsamf.V1.Common
-open Xsamf.V1.Domain.Monitoring.Dms
+open Xsamf.V1.Domain.Monitoring.HeartBeats
 open Xsamf.V1.Operations.Common
 open Xsamf.V1.Store.Shared
 
 [<RequireQualifiedAccess>]
 module UpdateOperations =
 
-    let checkIn (store: IXsamfStore) (checkIn: DmsCheckIn) =
-        // Fetch the dms watcher
+    let checkIn (store: IXsamfStore) (checkIn: HeartBeatCheckIn) =
+        // Fetch the HeartBeat watcher
         //store.
 
         ()
 
-    let anonymousCheckIn (store: IXsamfStore) (checkIn: AnonymousDmsCheckIn) =
+    let anonymousCheckIn (store: IXsamfStore) (checkIn: AnonymousHeartBeatCheckIn) =
         store.ExecuteInTransaction(fun t ->
-            t.GetDmsWatcher checkIn.WatcherReference
+            t.GetHeartBeatWatcher checkIn.WatcherReference
             |> FetchResult.toResult
             |> Result.bind (fun dw ->
                 let verifiers =
@@ -31,7 +31,7 @@ module UpdateOperations =
                 VerificationResult.verify verifiers dw)
             |> Result.bind (fun dw ->
                 match
-                    t.DmsCheckIn
+                    t.HeartBeatCheckIn
                         { Reference = checkIn.Reference
                           WatcherReference = dw.Reference
                           Timestamp = checkIn.Timestamp
@@ -50,7 +50,7 @@ module UpdateOperations =
                     
                     Ok()
                 | ActionResult.Failure failureResult -> Error failureResult))
-        |> toActionResult "Anonymous DMS check in"
+        |> toActionResult "Anonymous HeartBeat check in"
 
 
     //|> ActionResult.fromResult
