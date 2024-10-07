@@ -25,3 +25,8 @@ type SQLiteXsamfStore(ctx: SqliteContext) =
 
         member this.GetActivityWatcher(reference, version) =
             Activities.getWatcherVersion ctx reference version
+
+        member this.AddMonitoringEvents(tenantReference, events) =
+            
+            
+            failwith "todo"
