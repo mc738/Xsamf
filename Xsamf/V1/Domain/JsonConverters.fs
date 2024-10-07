@@ -25,6 +25,21 @@ module JsonConverters =
 
         override this.Write(writer, value, options) = value.WriteToJsonValue writer
     
+    type MonitoringAuthTypeConverter() =
+        inherit JsonConverter<MonitoringAuthType>()
+        
+        override this.Read(reader, typeToConvert, options) =
+            if reader.TokenType <> JsonTokenType.StartObject then
+                raise (JsonException())
+
+            use doc = JsonDocument.ParseValue(&reader)
+
+            match MonitoringAuthType.FromJson doc.RootElement with
+            | Ok authType -> authType
+            | Error errorValue -> raise (JsonException(errorValue))
+
+        override this.Write(writer, value, options) = value.WriteToJsonValue writer
+    
     type HeartBeatRuleConverter() =
 
         inherit JsonConverter<HeartBeatRule>()
