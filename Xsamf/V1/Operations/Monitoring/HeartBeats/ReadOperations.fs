@@ -1,4 +1,4 @@
-namespace Xsamf.V1.Operations.Monitoring.Dms
+namespace Xsamf.V1.Operations.Monitoring.HeartBeats
 
 open FsToolbox.Core.Results
 open Xsamf.V1.Domain.Monitoring.HeartBeats
